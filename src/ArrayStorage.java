@@ -11,9 +11,9 @@ public class ArrayStorage {
     void clear() {
         for (int i = 0; i < storageNumb; i++) {
             storage[i] = null;
-            }
-        storageNumb = 0;
         }
+        storageNumb = 0;
+    }
 
     void save(Resume r) {
         storage[storageNumb] = r;
@@ -33,8 +33,8 @@ public class ArrayStorage {
     void delete(String uuid) {
         for (int i = 0; i < storageNumb; i++) {
             if (storage[i].uuid.equals(uuid)) {
-                storage[i] = storage[storageNumb-1];
-                storage[storageNumb-1] = null;
+                storage[i] = storage[storageNumb - 1];
+                storage[storageNumb - 1] = null;
                 storageNumb--;
             }
         }
