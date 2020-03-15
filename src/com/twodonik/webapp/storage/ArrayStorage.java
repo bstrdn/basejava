@@ -16,28 +16,28 @@ public class ArrayStorage {
         storageNumb = 0;
     }
 
-    public void update(Resume r) {
-        if (findId(r.getUuid())>=0) {
-            storage[findId(r.getUuid())] = r;
+    public void update(Resume resume) {
+        if (findId(resume.getUuid()) >= 0) {
+            storage[findId(resume.getUuid())] = resume;
             System.out.println("Resume updated");
         } else {
             System.out.println("Resume does not exist");
         }
     }
 
-    public void save(Resume r) {
-        if (findId(r.getUuid()) >= 0) {
+    public void save(Resume resume) {
+        if (findId(resume.getUuid()) >= 0) {
             System.out.println("Resume exists");
         } else if (storageNumb >= 10000) {
             System.out.println("Overflow");
         } else {
-            storage[storageNumb] = r;
+            storage[storageNumb] = resume;
             storageNumb++;
         }
     }
 
     public Resume get(String uuid) {
-        if (findId(uuid)>=0) {
+        if (findId(uuid) >= 0) {
             return storage[findId(uuid)];
         } else {
             System.out.println("Resume does not exist");
@@ -46,14 +46,14 @@ public class ArrayStorage {
     }
 
     public void delete(String uuid) {
-        if (findId(uuid)>=0) {
+        if (findId(uuid) >= 0) {
             storage[findId(uuid)] = storage[storageNumb - 1];
             storage[storageNumb - 1] = null;
             storageNumb--;
         } else {
-                System.out.println("Resume does not exist");
-            }
+            System.out.println("Resume does not exist");
         }
+    }
 
     /**
      * @return array, contains only Resumes in storage (without null)
