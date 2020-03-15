@@ -1,3 +1,5 @@
+package com.twodonik.webapp;
+
 import com.twodonik.webapp.model.Resume;
 import com.twodonik.webapp.storage.ArrayStorage;
 
