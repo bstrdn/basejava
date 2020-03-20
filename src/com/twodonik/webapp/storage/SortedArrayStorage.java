@@ -7,28 +7,18 @@ import java.util.Arrays;
 public class SortedArrayStorage extends AbstractArrayStorage {
 
     @Override
-    public void clear() {
-
-    }
-
-    @Override
-    public void update(Resume resume) {
-
-    }
-
-    @Override
     public void save(Resume resume) {
-
-    }
-
-    @Override
-    public void delete(String uuid) {
-
-    }
-
-    @Override
-    public Resume[] getAll() {
-        return new Resume[0];
+        int binary = -(Arrays.binarySearch(storage, 0, size, resume)) - 1;
+        if (size == 0) {
+            storage[0] = resume;
+            size++;
+        } else if (binary < 0) {
+            System.out.println("Exist");
+        } else {
+            System.arraycopy(storage, binary, storage, binary + 1, size - binary);
+            storage[binary] = resume;
+            size++;
+        }
     }
 
     @Override
