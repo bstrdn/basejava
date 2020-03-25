@@ -1,5 +1,6 @@
 package com.twodonik.webapp.storage;
 
+import com.twodonik.webapp.exception.NotExistStorageException;
 import com.twodonik.webapp.model.Resume;
 
 import java.util.Arrays;
@@ -25,7 +26,7 @@ public abstract class AbstractArrayStorage implements Storage {
             storage[index] = resume;
             System.out.println("Resume " + storage[index] + " updated");
         } else {
-            System.out.println("Resume " + resume + " does not exist");
+            throw new NotExistStorageException(resume.getUuid());
         }
     }
 
@@ -34,8 +35,7 @@ public abstract class AbstractArrayStorage implements Storage {
         if (index >= 0) {
             return storage[index];
         }
-        System.out.println("Resume " + uuid + " does not exist");
-        return null;
+        throw new NotExistStorageException(uuid);
     }
 
     public void delete(String uuid) {
@@ -44,8 +44,7 @@ public abstract class AbstractArrayStorage implements Storage {
             System.arraycopy(storage, index + 1, storage, index, size - index);
             size--;
         } else {
-            System.out.println("Resume " + uuid + " does not exist");
-        }
+            throw new NotExistStorageException(uuid);        }
     }
 
     public Resume[] getAll() {

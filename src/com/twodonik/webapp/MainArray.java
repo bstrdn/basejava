@@ -1,7 +1,6 @@
 package com.twodonik.webapp;
 
 import com.twodonik.webapp.model.Resume;
-import com.twodonik.webapp.storage.ArrayStorage;
 import com.twodonik.webapp.storage.SortedArrayStorage;
 import com.twodonik.webapp.storage.Storage;
 
@@ -38,8 +37,7 @@ public class MainArray {
                     System.out.println(ARRAY_STORAGE.size());
                     break;
                 case "save":
-                    r = new Resume();
-                    r.setUuid(uuid);
+                    r = new Resume(uuid);
                     ARRAY_STORAGE.save(r);
                     printAll();
                     break;
