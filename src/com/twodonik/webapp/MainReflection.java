@@ -2,7 +2,6 @@ package com.twodonik.webapp;
 
 import com.twodonik.webapp.model.Resume;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 public class MainReflection {

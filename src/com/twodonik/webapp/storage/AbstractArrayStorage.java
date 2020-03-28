@@ -1,6 +1,8 @@
 package com.twodonik.webapp.storage;
 
+import com.twodonik.webapp.exception.ExistStorageException;
 import com.twodonik.webapp.exception.NotExistStorageException;
+import com.twodonik.webapp.exception.StorageException;
 import com.twodonik.webapp.model.Resume;
 
 import java.util.Arrays;
@@ -12,7 +14,7 @@ public abstract class AbstractArrayStorage implements Storage {
     protected static final int STORAGE_LIMIT = 10_000;
 
     protected Resume[] storage = new Resume[STORAGE_LIMIT];
-    protected int size = 0;
+    int size = 0;
 
 
     public void clear() {
@@ -35,9 +37,9 @@ public abstract class AbstractArrayStorage implements Storage {
         int index = findIndex(resume.getUuid());
 
         if (size >= STORAGE_LIMIT) {
-            System.out.println("Overflow");
+            throw new StorageException("Overflow", resume.getUuid());
         } else if (index >= 0) {
-            System.out.println("Resume " + storage[index] + " exists");
+            throw new ExistStorageException(resume.getUuid());
         } else {
             saveByIndex(resume, index);
             size++;

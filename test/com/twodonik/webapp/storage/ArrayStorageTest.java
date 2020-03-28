@@ -3,13 +3,7 @@ package com.twodonik.webapp.storage;
 import static org.junit.Assert.*;
 
 public class ArrayStorageTest extends AbstractArrayStorageTest {
-    public ArrayStorageTest () {
+    public ArrayStorageTest() {
         super.storage = new ArrayStorage();
     }
-
-
-//    @Override
-//    Storage newStorage() {
-//        return new ArrayStorage();
-//    }
 }
