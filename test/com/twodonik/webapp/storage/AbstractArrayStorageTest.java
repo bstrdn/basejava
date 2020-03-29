@@ -11,12 +11,13 @@ import org.junit.Test;
 import static org.junit.Assert.fail;
 
 public abstract class AbstractArrayStorageTest {
-    Storage storage;
+    ArrayStorage storage;
 
     private static final String UUID_1 = "UUID_1";
     private static final String UUID_2 = "UUID_2";
     private static final String UUID_3 = "UUID_3";
     private static final String UUID_4 = "UUID_4";
+
 
     @Before
     public void setUp() throws Exception {
@@ -35,7 +36,7 @@ public abstract class AbstractArrayStorageTest {
 
     @Test
     public void update() {
-        Resume test1 = storage.get(UUID_1);
+        Resume test1 = new Resume(UUID_1);
         storage.update(test1);
         Assert.assertEquals(test1, storage.get(UUID_1));
     }
@@ -85,21 +86,29 @@ public abstract class AbstractArrayStorageTest {
 
     @Test
     public void delete() {
-        storage.delete(UUID_2);
+        int size = storage.size;
+       storage.delete(UUID_2);
+        if (storage.size() == size) {
+            fail("Removal failed");
+        }
+        try {
+            storage.get(UUID_2);
+            fail("Removal failed");
+        } catch (Exception e) {
+
+        }
     }
 
     @Test(expected = NotExistStorageException.class)
     public void deleteNotExist() {
-        storage.delete(UUID_1);
+        storage.delete("uuuu_3");
     }
 
     @Test
     public void getAll() {
-        Resume[] test = storage.getAll();
-        Assert.assertEquals(test[0], storage.get(UUID_1));
-        Assert.assertEquals(test[1], storage.get(UUID_2));
-        Assert.assertEquals(test[2], storage.get(UUID_3));
-        Assert.assertEquals(test[3], storage.get(UUID_4));
+
+        Resume[] resumes = storage.getAll();
+        Assert.assertEquals(resumes, storage.getAll());
     }
 
     @Test
