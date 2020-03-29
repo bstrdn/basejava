@@ -7,8 +7,6 @@ import java.lang.reflect.Method;
 public class MainReflection {
     public static void main(String[] args) {
         Resume resume = new Resume();
-        System.out.println(resume);
-        Method method = resume.getClass().getMethods()[1];
-        System.out.println(method.getName());
+        System.out.println(resume.getClass().getMethods()[2]);
     }
 }

@@ -1,9 +1,7 @@
 package com.twodonik.webapp.storage;
 
-import static org.junit.Assert.*;
-
 public class SortedArrayStorageTest extends AbstractArrayStorageTest {
-    public SortedArrayStorageTest() {
-        super.storage = new SortedArrayStorage();
+    public SortedArrayStorageTest(){
+        this.storage = new ArrayStorage();
     }
 }
