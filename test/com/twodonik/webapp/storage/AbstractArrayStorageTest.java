@@ -11,7 +11,7 @@ import org.junit.Test;
 import static org.junit.Assert.fail;
 
 public abstract class AbstractArrayStorageTest {
-    ArrayStorage storage;
+    AbstractArrayStorage storage;
 
     private static final String UUID_1 = "UUID_1";
     private static final String UUID_2 = "UUID_2";
@@ -51,7 +51,7 @@ public abstract class AbstractArrayStorageTest {
         Resume test = new Resume("UUID_6");
         storage.save(test);
         Assert.assertEquals(test, storage.get("UUID_6"));
-        if (storage.size() > 9999) {
+        if (storage.size() >= storage.STORAGE_LIMIT) {
             fail();
         }
     }
@@ -59,7 +59,7 @@ public abstract class AbstractArrayStorageTest {
     @Test(expected = StorageException.class)
     public void saveOverflow() {
         try {
-            for (int i = storage.size(); i <= 9999; i++) {
+            for (int i = storage.size(); i < storage.STORAGE_LIMIT; i++) {
                 storage.save(new Resume("uuid_" + i));
             }
         } catch (Exception a) {
