@@ -23,13 +23,8 @@ public abstract class AbstractStorage implements Storage {
     }
 
     public void update(Resume resume) {
-        Iterator<Resume> iterator = storages.iterator();
-        while (iterator.hasNext()) {
-            Resume r = iterator.next();
-            if (r.equals(resume)) {
-                r = resume;
-            }
-        }
+        storages.remove(resume);
+        storages.add(resume);
     }
 
     public void save(Resume resume) {
@@ -37,6 +32,14 @@ public abstract class AbstractStorage implements Storage {
     }
 
     public Resume get(String uuid) {
+        return findResume(uuid);
+    }
+
+    public void delete(String uuid) {
+        storages.remove(findResume(uuid));
+    }
+
+    public Resume findResume(String uuid) {
         Iterator<Resume> iterator = storages.iterator();
         while (iterator.hasNext()) {
             Resume r = iterator.next();
@@ -45,16 +48,6 @@ public abstract class AbstractStorage implements Storage {
             }
         }
         return null;
-    }
-
-    public void delete(String uuid) {
-        Iterator<Resume> iterator = storages.iterator();
-        while (iterator.hasNext()) {
-            Resume r = iterator.next();
-            if (r.getUuid().equals(uuid)) {
-                iterator.remove();
-            }
-        }
     }
 
     public Resume[] getAll() {
