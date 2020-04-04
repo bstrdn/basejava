@@ -54,8 +54,6 @@ public abstract class AbstractStorage implements Storage {
         return storages.toArray(new Resume[size()]);
     }
 
-    public int size() {
-        return storages.size();
-    }
+    public abstract int size();
 
 }

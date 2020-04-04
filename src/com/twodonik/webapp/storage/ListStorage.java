@@ -10,4 +10,8 @@ public class ListStorage extends AbstractStorage {
         super(new ArrayList<Resume>());
     }
 
+    @Override
+    public int size() {
+        return storages.size();
+    }
 }
