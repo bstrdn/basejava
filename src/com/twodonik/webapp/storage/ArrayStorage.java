@@ -2,6 +2,9 @@ package com.twodonik.webapp.storage;
 
 import com.twodonik.webapp.model.Resume;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Array based storage for Resumes
  */
@@ -25,4 +28,6 @@ public class ArrayStorage extends AbstractArrayStorage {
     protected void saveByIndex(Resume resume, int index) {
         storage[size] = resume;
     }
+
+    Map<String, Resume> map = new HashMap<>();
 }
