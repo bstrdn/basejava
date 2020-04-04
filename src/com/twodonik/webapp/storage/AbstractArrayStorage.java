@@ -10,11 +10,13 @@ import java.util.Arrays;
 /**
  * Array based storage for Resumes
  */
-public abstract class AbstractArrayStorage implements Storage {
+public abstract class AbstractArrayStorage extends AbstractStorage {
     protected static final int STORAGE_LIMIT = 10_000;
-
-    protected Resume[] storage = new Resume[STORAGE_LIMIT];
     int size = 0;
+
+    public AbstractArrayStorage(Resume[] r) {
+        super(r);
+    }
 
 
     public void clear() {
@@ -62,7 +64,8 @@ public abstract class AbstractArrayStorage implements Storage {
             storage[size - 1] = null;
             size--;
         } else {
-            throw new NotExistStorageException(uuid);        }
+            throw new NotExistStorageException(uuid);
+        }
     }
 
     public Resume[] getAll() {

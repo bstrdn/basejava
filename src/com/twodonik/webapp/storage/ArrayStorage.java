@@ -10,6 +10,11 @@ import java.util.Map;
  */
 public class ArrayStorage extends AbstractArrayStorage {
 
+
+    public ArrayStorage() {
+        super(new Resume[STORAGE_LIMIT]);
+    }
+
     protected int findIndex(String uuid) {
         for (int i = 0; i < size; i++) {
             if (storage[i].getUuid().equals(uuid)) {

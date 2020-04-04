@@ -2,8 +2,6 @@ package com.twodonik.webapp.storage;
 
 import com.twodonik.webapp.model.Resume;
 
-import java.util.Arrays;
-
 /**
  * Array based storage for Resumes
  */
