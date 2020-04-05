@@ -8,19 +8,19 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public abstract class AbstractArrayStorageTest {
     Storage storage;
-
-    protected AbstractArrayStorageTest(Storage storage) {
-        this.storage = storage;
-    }
 
     private static final String UUID_1 = "UUID_1";
     private static final String UUID_2 = "UUID_2";
     private static final String UUID_3 = "UUID_3";
     private static final String UUID_4 = "UUID_4";
+
+    protected AbstractArrayStorageTest(Storage storage) {
+        this.storage = storage;
+    }
 
     @Before
     public void setUp() throws Exception {
@@ -34,14 +34,14 @@ public abstract class AbstractArrayStorageTest {
     @Test
     public void clear() {
         storage.clear();
-        Assert.assertEquals(0, storage.size());
+        assertEquals(0, storage.size());
     }
 
     @Test
     public void update() {
         Resume test1 = new Resume(UUID_1);
         storage.update(test1);
-        Assert.assertEquals(test1, storage.get(UUID_1));
+        assertEquals(test1, storage.get(UUID_1));
     }
 
     @Test(expected = NotExistStorageException.class)
@@ -53,7 +53,7 @@ public abstract class AbstractArrayStorageTest {
     public void save() {
         Resume test = new Resume("UUID_6");
         storage.save(test);
-        Assert.assertEquals(test, storage.get("UUID_6"));
+        assertEquals(test, storage.get("UUID_6"));
         if (storage.size() >= AbstractArrayStorage.STORAGE_LIMIT) {
             fail();
         }
@@ -79,7 +79,7 @@ public abstract class AbstractArrayStorageTest {
     @Test
     public void get() {
         Resume test = new Resume(UUID_2);
-        Assert.assertEquals(test, storage.get(UUID_2));
+        assertEquals(test, storage.get(UUID_2));
     }
 
     @Test(expected = NotExistStorageException.class)
@@ -90,7 +90,7 @@ public abstract class AbstractArrayStorageTest {
     @Test
     public void delete() {
         int size = AbstractArrayStorage.STORAGE_LIMIT;
-       storage.delete(UUID_2);
+        storage.delete(UUID_2);
         if (storage.size() == size) {
             fail("Removal failed");
         }
@@ -110,12 +110,12 @@ public abstract class AbstractArrayStorageTest {
     @Test
     public void getAll() {
         Resume[] resumes = storage.getAll();
-        Assert.assertEquals(4, storage.size());
-        Assert.assertEquals(resumes, storage.getAll());
+        assertEquals(4, storage.size());
+        assertArrayEquals(resumes, storage.getAll());
     }
 
     @Test
     public void size() {
-        Assert.assertEquals(4, storage.size());
+        assertEquals(4, storage.size());
     }
 }

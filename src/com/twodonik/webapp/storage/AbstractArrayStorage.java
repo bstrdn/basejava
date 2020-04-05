@@ -18,7 +18,6 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
         super(r);
     }
 
-
     public void clear() {
         Arrays.fill(storage, 0, size, null);
         size = 0;
@@ -33,7 +32,6 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
             throw new NotExistStorageException(resume.getUuid());
         }
     }
-
 
     public void save(Resume resume) {
         int index = findIndex(resume.getUuid());
