@@ -1,23 +1,54 @@
 package com.twodonik.webapp.storage;
 
+import com.twodonik.webapp.exception.ExistStorageException;
+import com.twodonik.webapp.exception.NotExistStorageException;
 import com.twodonik.webapp.model.Resume;
-
-import java.util.Collection;
-import java.util.Iterator;
 
 public abstract class AbstractStorage implements Storage {
 
-    protected Resume[] storage;
-    protected Collection<Resume> storages;
-
-    public AbstractStorage(Resume[] storage) {
-        this.storage = storage;
+    public void update(Resume resume) {
+        int index = findIndex(resume);
+        if (index >= 0) {
+            updateByIndex(resume, index);
+        } else {
+            throw new NotExistStorageException(resume.getUuid());
+        }
     }
 
-    public AbstractStorage(Collection<Resume> storages) {
-        this.storages = storages;
+    public void save(Resume resume) {
+        int index = findIndex(resume);
+        if (index >= 0) {
+            throw new ExistStorageException(resume.getUuid());
+        } else {
+            saveByIndex(resume, index);
+        }
     }
 
-    public abstract int size();
+    public Resume get(String uuid) {
+        Resume r = findResume(uuid);
+        if (r != null) {
+            return r;
+        }
+        throw new NotExistStorageException(uuid);
+    }
+
+    public void delete(String uuid) {
+        Resume r = findResume(uuid);
+        if (r != null) {
+            deleteByResume(r);
+        } else {
+            throw new NotExistStorageException(uuid);
+        }
+    }
+
+    protected abstract void updateByIndex(Resume resume, int index);
+
+    protected abstract void saveByIndex(Resume resume, int index);
+
+    protected abstract int findIndex(Resume resume);
+
+    protected abstract Resume findResume(String uuid);
+
+    protected abstract void deleteByResume(Resume r);
 
 }

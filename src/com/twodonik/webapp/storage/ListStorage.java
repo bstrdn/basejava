@@ -7,22 +7,14 @@ import java.util.Iterator;
 
 public class ListStorage extends AbstractStorage {
 
-    public ListStorage() {
-        super(new ArrayList<Resume>());
-    }
+    protected ArrayList<Resume> storages = new ArrayList<>();
 
-    public void clear() {
-        storages.clear();
-    }
 
     public void update(Resume resume) {
         storages.remove(resume);
         storages.add(resume);
     }
 
-    public void save(Resume resume) {
-        storages.add(resume);
-    }
 
     public Resume get(String uuid) {
         return findResume(uuid);
@@ -31,6 +23,7 @@ public class ListStorage extends AbstractStorage {
     public void delete(String uuid) {
         storages.remove(findResume(uuid));
     }
+
 
     public Resume findResume(String uuid) {
         Iterator<Resume> iterator = storages.iterator();
@@ -48,7 +41,41 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
+    public void clear() {
+        storages.clear();
+    }
+
+    @Override
+    public void save(Resume resume) {
+        storages.add(resume);
+    }
+
+    @Override
     public int size() {
         return storages.size();
     }
+
+    @Override
+    protected int findIndex(Resume resume) {
+        int i = storages.indexOf(resume);
+        return i;
+    }
+
+    @Override
+    protected void saveByIndex(Resume resume, int index) {
+        storages.add(index, resume);
+    }
+
+    @Override
+    protected void updateByIndex(Resume resume, int index) {
+        storages.remove(index);
+        storages.add(index, resume);
+    }
+
+
+    @Override
+    protected void deleteByResume(Resume r) {
+        storages.remove(r);
+    }
+
 }
