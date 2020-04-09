@@ -3,10 +3,11 @@ package com.twodonik.webapp.storage;
 import com.twodonik.webapp.model.Resume;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ListStorage extends AbstractStorage {
 
-    protected ArrayList<Resume> storage = new ArrayList<>();
+    private List<Resume> storage = new ArrayList<>();
 
     @Override
     public void clear() {
@@ -14,22 +15,22 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected void updateByIndex(Resume resume, int index) {
+    protected void updateResume(Resume resume, int index) {
         storage.set(index, resume);
     }
 
     @Override
-    protected void saveByIndex(Resume resume, int index) {
+    protected void saveResume(Resume resume, int index) {
         storage.add(resume);
     }
 
     @Override
-    protected Resume getByIndex(int index) {
+    protected Resume getResume(int index) {
         return storage.get(index);
     }
 
     @Override
-    protected void deleteByIndex(int index) {
+    protected void deleteResume(int index) {
         storage.remove(index);
     }
 
@@ -44,11 +45,10 @@ public class ListStorage extends AbstractStorage {
 
     @Override
     protected int findIndex(String uuid) {
-        for (Resume r : storage) {
-            if (r.getUuid().equals(uuid)) {
-                return storage.indexOf(r);
+        for (int i = 0; i < storage.size(); i++)
+            if (storage.get(i).getUuid().equals(uuid)) {
+                return i;
             }
-        }
         return -1;
     }
 }
