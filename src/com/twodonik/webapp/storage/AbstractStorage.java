@@ -5,37 +5,21 @@ import com.twodonik.webapp.exception.NotExistStorageException;
 import com.twodonik.webapp.model.Resume;
 
 public abstract class AbstractStorage implements Storage {
-    private int index;
 
     public void update(Resume resume) {
-        if (ifExist(resume.getUuid())) {
-            updateResume(resume, index);
-        } else {
-            throw new NotExistStorageException(resume.getUuid());
-        }
+        toDo("update", resume);
     }
 
     public void save(Resume resume) {
-        if (ifExist(resume.getUuid())) {
-            throw new ExistStorageException(resume.getUuid());
-        } else {
-            saveResume(resume, index);
-        }
+        toDo("save", resume);
     }
 
     public Resume get(String uuid) {
-        if (ifExist(uuid)) {
-            return getResume(index);
-        }
-        throw new NotExistStorageException(uuid);
+        return toDo("get", new Resume(uuid));
     }
 
     public void delete(String uuid) {
-        if (ifExist(uuid)) {
-            deleteResume(index);
-        } else {
-            throw new NotExistStorageException(uuid);
-        }
+        toDo("delete", new Resume(uuid));
     }
 
     protected abstract int findIndex(String uuid);
@@ -48,11 +32,27 @@ public abstract class AbstractStorage implements Storage {
 
     protected abstract void deleteResume(int index);
 
-    boolean ifExist(String uuid) {
-        index = findIndex(uuid);
+    protected Resume toDo(String action, Resume resume) {
+        String uuid = resume.getUuid();
+        int index = findIndex(uuid);
         if (index >= 0) {
-            return true;
+            switch (action) {
+                case "update":
+                    updateResume(resume, index);
+                    break;
+                case "save":
+                    throw new ExistStorageException(uuid);
+                case "get":
+                    return getResume(index);
+                case "delete":
+                    deleteResume(index);
+                    break;
+            }
+        } else if (action.equals("save")) {
+            saveResume(resume, index);
+        } else {
+            throw new NotExistStorageException(uuid);
         }
-        return false;
+        return null;
     }
 }
