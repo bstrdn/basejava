@@ -7,19 +7,24 @@ import com.twodonik.webapp.model.Resume;
 public abstract class AbstractStorage implements Storage {
 
     public void update(Resume resume) {
-        toDo("update", resume);
+        updateResume(resume, ifExist(resume.getUuid()));
     }
 
     public void save(Resume resume) {
-        toDo("save", resume);
+        int index = findIndex(resume.getUuid());
+        if (index >= 0) {
+            throw new ExistStorageException(resume.getUuid());
+        } else {
+            saveResume(resume, index);
+        }
     }
 
     public Resume get(String uuid) {
-        return toDo("get", new Resume(uuid));
+        return getResume(ifExist(uuid));
     }
 
     public void delete(String uuid) {
-        toDo("delete", new Resume(uuid));
+        deleteResume(ifExist(uuid));
     }
 
     protected abstract int findIndex(String uuid);
@@ -32,27 +37,11 @@ public abstract class AbstractStorage implements Storage {
 
     protected abstract void deleteResume(int index);
 
-    protected Resume toDo(String action, Resume resume) {
-        String uuid = resume.getUuid();
+    int ifExist(String uuid) {
         int index = findIndex(uuid);
         if (index >= 0) {
-            switch (action) {
-                case "update":
-                    updateResume(resume, index);
-                    break;
-                case "save":
-                    throw new ExistStorageException(uuid);
-                case "get":
-                    return getResume(index);
-                case "delete":
-                    deleteResume(index);
-                    break;
-            }
-        } else if (action.equals("save")) {
-            saveResume(resume, index);
-        } else {
-            throw new NotExistStorageException(uuid);
+            return index;
         }
-        return null;
+        throw new NotExistStorageException(uuid);
     }
 }
