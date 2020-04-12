@@ -7,7 +7,7 @@ import com.twodonik.webapp.model.Resume;
 public abstract class AbstractStorage implements Storage {
 
     public void update(Resume resume) {
-        updateResume(resume, ifExist(resume.getUuid()));
+        updateResume(resume, getIndexIfExist(resume.getUuid()));
     }
 
     public void save(Resume resume) {
@@ -20,11 +20,11 @@ public abstract class AbstractStorage implements Storage {
     }
 
     public Resume get(String uuid) {
-        return getResume(ifExist(uuid));
+        return getResume(getIndexIfExist(uuid));
     }
 
     public void delete(String uuid) {
-        deleteResume(ifExist(uuid));
+        deleteResume(getIndexIfExist(uuid));
     }
 
     protected abstract int findIndex(String uuid);
@@ -37,10 +37,10 @@ public abstract class AbstractStorage implements Storage {
 
     protected abstract void deleteResume(int index);
 
-    int ifExist(String uuid) {
-        int index = findIndex(uuid);
-        if (index >= 0) {
-            return index;
+    int getIndexIfExist(String uuid) {
+        int searchKey = findIndex(uuid);
+        if (searchKey >= 0) {
+            return searchKey;
         }
         throw new NotExistStorageException(uuid);
     }

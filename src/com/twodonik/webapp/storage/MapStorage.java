@@ -9,14 +9,15 @@ import static java.lang.Math.abs;
 
 public class MapStorage extends AbstractStorage {
 
-    private Map<String, Resume> storage = new HashMap<>();
+    private Map<Integer, Resume> storage = new HashMap<>();
 
     @Override
     protected int findIndex(String uuid) {
-        if (storage.containsKey(uuid)) {
-            return abs(uuid.hashCode());
+        int key = uuid.hashCode();
+        if (storage.containsKey(key)) {
+            return abs(key);
         }
-        return -1;
+        return key;
     }
 
     @Override
@@ -26,17 +27,17 @@ public class MapStorage extends AbstractStorage {
 
     @Override
     protected void saveResume(Resume resume, int index) {
-        storage.put(resume.getUuid(), resume);
+        storage.put(index, resume);
     }
 
     @Override
     protected Resume getResume(int index) {
-        return storage.get(findUuid(index));
+        return storage.get(-index);
     }
 
     @Override
     protected void deleteResume(int index) {
-        storage.remove(findUuid(index));
+        storage.remove(-index);
     }
 
     @Override
@@ -52,14 +53,5 @@ public class MapStorage extends AbstractStorage {
     @Override
     public int size() {
         return storage.size();
-    }
-
-    String findUuid(int index) {
-        for (String uuid : storage.keySet()) {
-            if (abs(uuid.hashCode()) == index) {
-                return uuid;
-            }
-        }
-        return null;
     }
 }
