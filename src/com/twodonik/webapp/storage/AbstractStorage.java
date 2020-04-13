@@ -7,38 +7,38 @@ import com.twodonik.webapp.model.Resume;
 public abstract class AbstractStorage implements Storage {
 
     public void update(Resume resume) {
-        updateResume(resume, getIndexIfExist(resume.getUuid()));
+        updateResume(resume, getKeyIfExist(resume.getUuid()));
     }
 
     public void save(Resume resume) {
-        int index = findIndex(resume.getUuid());
-        if (index >= 0) {
+        int searchKey = findKey(resume.getUuid());
+        if (searchKey >= 0) {
             throw new ExistStorageException(resume.getUuid());
         } else {
-            saveResume(resume, index);
+            saveResume(resume, searchKey);
         }
     }
 
     public Resume get(String uuid) {
-        return getResume(getIndexIfExist(uuid));
+        return getResume(getKeyIfExist(uuid));
     }
 
     public void delete(String uuid) {
-        deleteResume(getIndexIfExist(uuid));
+        deleteResume(getKeyIfExist(uuid));
     }
 
-    protected abstract int findIndex(String uuid);
+    protected abstract int findKey(String uuid);
 
-    protected abstract void updateResume(Resume resume, int index);
+    protected abstract void updateResume(Resume resume, int key);
 
-    protected abstract void saveResume(Resume resume, int index);
+    protected abstract void saveResume(Resume resume, int key);
 
-    protected abstract Resume getResume(int index);
+    protected abstract Resume getResume(int key);
 
-    protected abstract void deleteResume(int index);
+    protected abstract void deleteResume(int key);
 
-    int getIndexIfExist(String uuid) {
-        int searchKey = findIndex(uuid);
+    int getKeyIfExist(String uuid) {
+        int searchKey = findKey(uuid);
         if (searchKey >= 0) {
             return searchKey;
         }
