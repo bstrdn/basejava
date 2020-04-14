@@ -20,11 +20,11 @@ public abstract class AbstractStorage implements Storage {
     }
 
     public Resume get(String uuid) {
-        return getResume(getKeyIfExist(uuid));
+        return getResume(getKeyIfExist(uuid), uuid);
     }
 
     public void delete(String uuid) {
-        deleteResume(getKeyIfExist(uuid));
+        deleteResume(getKeyIfExist(uuid), uuid);
     }
 
     protected abstract int findKey(String uuid);
@@ -33,9 +33,9 @@ public abstract class AbstractStorage implements Storage {
 
     protected abstract void saveResume(Resume resume, int key);
 
-    protected abstract Resume getResume(int key);
+    protected abstract Resume getResume(int key, String uuid);
 
-    protected abstract void deleteResume(int key);
+    protected abstract void deleteResume(int key, String uuid);
 
     int getKeyIfExist(String uuid) {
         int searchKey = findKey(uuid);

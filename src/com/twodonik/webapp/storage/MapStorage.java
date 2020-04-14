@@ -1,6 +1,5 @@
 package com.twodonik.webapp.storage;
 
-import com.twodonik.webapp.exception.NotExistStorageException;
 import com.twodonik.webapp.model.Resume;
 
 import java.util.HashMap;
@@ -19,22 +18,6 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    public Resume get(String uuid) {
-        if (findKey(uuid) > 0) {
-            return storage.get(uuid);
-        }
-        throw new NotExistStorageException(uuid);
-    }
-
-    @Override
-    public void delete(String uuid) {
-        if (findKey(uuid) < 0) {
-            storage.remove(uuid);
-        }
-        throw new NotExistStorageException(uuid);
-    }
-
-    @Override
     protected void updateResume(Resume resume, int key) {
         storage.put(resume.getUuid(), resume);
     }
@@ -45,12 +28,13 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected Resume getResume(int key) {
-        return null;
+    protected Resume getResume(int key, String uuid) {
+        return storage.get(uuid);
     }
 
     @Override
-    protected void deleteResume(int key) {
+    protected void deleteResume(int key, String uuid) {
+        storage.remove(uuid);
     }
 
     @Override

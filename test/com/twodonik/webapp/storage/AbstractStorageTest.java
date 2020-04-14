@@ -94,7 +94,7 @@ public abstract class AbstractStorageTest {
     public void getAll() {
         Resume[] expectedResume = storage.getAll();
         Resume[] actualResume = {RESUME_1, RESUME_2, RESUME_3, RESUME_4};
-        assertEquals(4, storage.size());
+        assertEquals(4, expectedResume.length);
         assertArrayEquals(actualResume, expectedResume);
     }
 
