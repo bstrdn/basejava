@@ -2,10 +2,12 @@ package com.twodonik.webapp.storage;
 
 import com.twodonik.webapp.model.Resume;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class MapStorage extends AbstractStorage {
+public class MapUuidStorage extends AbstractStorage {
 
     private Map<String, Resume> storage = new HashMap<>();
 
@@ -29,12 +31,12 @@ public class MapStorage extends AbstractStorage {
 
     @Override
     protected Resume getResume(Object uuid) {
-        return storage.get((String) uuid);
+        return storage.get(uuid);
     }
 
     @Override
-    protected void deleteResume(Object key) {
-        storage.remove((String) key);
+    protected void deleteResume(Object uuid) {
+        storage.remove(uuid);
     }
 
     @Override
@@ -43,8 +45,8 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    public Resume[] getAll() {
-        return storage.values().toArray(new Resume[0]);
+    protected List<Resume> getList() {
+        return new ArrayList<>(storage.values());
     }
 
     @Override
@@ -53,8 +55,7 @@ public class MapStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean ifExist(Object searchKey) {
+    protected boolean isExist(Object searchKey) {
         return searchKey != null;
     }
-
 }

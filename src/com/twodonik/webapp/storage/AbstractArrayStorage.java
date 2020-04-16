@@ -4,6 +4,7 @@ import com.twodonik.webapp.exception.StorageException;
 import com.twodonik.webapp.model.Resume;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Array based storage for Resumes
@@ -12,7 +13,6 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     protected static final int STORAGE_LIMIT = 10_000;
     protected int size = 0;
     protected Resume[] storage = new Resume[STORAGE_LIMIT];
-
 
     @Override
     public void clear() {
@@ -47,13 +47,15 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean ifExist(Object index) {
+    protected boolean isExist(Object index) {
         return ((Integer) index) >= 0;
     }
 
-    public Resume[] getAll() {
-        return Arrays.copyOf(storage, size);
+    @Override
+    protected List<Resume> getList() {
+        return Arrays.asList(Arrays.copyOf(storage, size));
     }
+
 
     public int size() {
         return size;
@@ -62,6 +64,4 @@ public abstract class AbstractArrayStorage extends AbstractStorage {
     protected abstract void saveToStorage(Resume resume, int index);
 
     protected abstract void deleteFromStorage(int index);
-
-
 }

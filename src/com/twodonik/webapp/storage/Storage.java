@@ -2,6 +2,8 @@ package com.twodonik.webapp.storage;
 
 import com.twodonik.webapp.model.Resume;
 
+import java.util.List;
+
 /**
  * Array based storage for Resumes
  */
@@ -17,7 +19,7 @@ public interface Storage {
 
     void delete(String uuid);
 
-    Resume[] getAll();
+    List<Resume> getAllSorted();
 
     int size();
 
