@@ -9,23 +9,7 @@ import java.util.List;
 
 public abstract class AbstractStorage implements Storage {
 
-    static class FullNameComparator implements Comparator<Resume> {
-
-        @Override
-        public int compare(Resume r1, Resume r2) {
-            return r1.getFullName().compareTo(r2.getFullName());
-        }
-    }
-
-    static class UuidComparator implements Comparator<Resume> {
-
-        @Override
-        public int compare(Resume r1, Resume r2) {
-            return r1.getUuid().compareTo(r2.getUuid());
-        }
-    }
-
-    protected static Comparator<Resume> COMPARATOR = new FullNameComparator().thenComparing(new UuidComparator());
+    private static Comparator<Resume> resumeUuidNameComparator = Comparator.comparing(Resume::getFullName).thenComparing(Resume::getUuid);
 
     public void update(Resume resume) {
         updateResume(resume, getKeyIfExist(resume.getUuid()));
@@ -43,7 +27,7 @@ public abstract class AbstractStorage implements Storage {
     @Override
     public List<Resume> getAllSorted() {
         List<Resume> list = getList();
-        list.sort(COMPARATOR);
+        list.sort(resumeUuidNameComparator);
         return list;
     }
 
