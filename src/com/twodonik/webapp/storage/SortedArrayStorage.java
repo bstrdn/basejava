@@ -3,8 +3,11 @@ package com.twodonik.webapp.storage;
 import com.twodonik.webapp.model.Resume;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 public class SortedArrayStorage extends AbstractArrayStorage {
+
+    private static Comparator<Resume> resumeUuidComparator = Comparator.comparing(Resume::getUuid);
 
     @Override
     protected void saveToStorage(Resume resume, int index) {
@@ -20,7 +23,7 @@ public class SortedArrayStorage extends AbstractArrayStorage {
 
     @Override
     protected Object findKey(String uuid) {
-        Resume searchKey = new Resume(uuid);
-        return Arrays.binarySearch(storage, 0, size, searchKey, new UuidComparator());
+        Resume searchKey = new Resume(uuid, null);
+        return Arrays.binarySearch(storage, 0, size, searchKey, resumeUuidComparator);
     }
 }

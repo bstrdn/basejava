@@ -6,7 +6,7 @@ import com.twodonik.webapp.model.Resume;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -16,20 +16,15 @@ public abstract class AbstractStorageTest {
     Storage storage;
 
     protected static final String UUID_1 = "UUID_1";
-    protected static final String FULL_NAME_1 = "Ivanov Petr Sergeevich";
     protected static final String UUID_2 = "UUID_2";
-    protected static final String FULL_NAME_2 = "Smirnov Denis Grigorevich";
     protected static final String UUID_3 = "UUID_3";
-    protected static final String FULL_NAME_3 = "Smirnov Denis Grigorevich";
     protected static final String UUID_4 = "UUID_4";
-    protected static final String FULL_NAME_4 = "Petrov Vasiliy Timofeevich";
     protected static final String UUID_5 = "UUID_5";
-    protected static final String FULL_NAME_5 = "Sidorov Artur Denisovich";
-    protected static final Resume RESUME_1 = new Resume(UUID_1, FULL_NAME_1);
-    protected static final Resume RESUME_2 = new Resume(UUID_2, FULL_NAME_2);
-    protected static final Resume RESUME_3 = new Resume(UUID_3, FULL_NAME_3);
-    protected static final Resume RESUME_4 = new Resume(UUID_4, FULL_NAME_4);
-    protected static final Resume RESUME_5 = new Resume(UUID_5, FULL_NAME_5);
+    protected static final Resume RESUME_1 = new Resume(UUID_1, "Ivanov Petr Sergeevich");
+    protected static final Resume RESUME_2 = new Resume(UUID_2, "Smirnov Denis Grigorevich");
+    protected static final Resume RESUME_3 = new Resume(UUID_3, "Smirnov Denis Grigorevich");
+    protected static final Resume RESUME_4 = new Resume(UUID_4, "Petrov Vasiliy Timofeevich");
+    protected static final Resume RESUME_5 = new Resume(UUID_5, "Sidorov Artur Denisovich");
 
     public AbstractStorageTest(Storage storage) {
         this.storage = storage;
@@ -52,7 +47,7 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void update() {
-        Resume test1 = new Resume(UUID_1, FULL_NAME_1);
+        Resume test1 = new Resume(UUID_1, "Ivanov Petr Sergeevich");
         storage.update(test1);
         assertEquals(test1, storage.get(UUID_1));
     }
@@ -66,9 +61,7 @@ public abstract class AbstractStorageTest {
     public void save() {
         storage.save(RESUME_5);
         assertEquals(RESUME_5, storage.get(UUID_5));
-        if (storage.size() >= AbstractArrayStorage.STORAGE_LIMIT) {
-            fail();
-        }
+        assertEquals(5, storage.size());
     }
 
     @Test(expected = ExistStorageException.class)
@@ -101,13 +94,9 @@ public abstract class AbstractStorageTest {
     @Test
     public void getAllSorted() {
         List<Resume> expectedResume = storage.getAllSorted();
-        List<Resume> actualResume = new ArrayList<>();
-        actualResume.add(RESUME_1);
-        actualResume.add(RESUME_4);
-        actualResume.add(RESUME_2);
-        actualResume.add(RESUME_3);
+        List<Resume> actualResume = Arrays.asList(RESUME_1, RESUME_4, RESUME_2, RESUME_3);
         assertEquals(4, expectedResume.size());
-        assertEquals(actualResume, expectedResume);
+        assertEquals(expectedResume, actualResume);
     }
 
     @Test
