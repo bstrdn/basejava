@@ -9,11 +9,11 @@ import java.util.Map;
 
 public class MapUuidStorage extends AbstractStorage {
 
-    private Map<String, Resume> storage = new HashMap<>();
+    private Map<String, Resume> map = new HashMap<>();
 
     @Override
     protected Object findKey(String uuid) {
-        if (storage.containsKey(uuid)) {
+        if (map.containsKey(uuid)) {
             return uuid;
         }
         return null;
@@ -21,37 +21,37 @@ public class MapUuidStorage extends AbstractStorage {
 
     @Override
     protected void updateResume(Resume resume, Object uuid) {
-        storage.put((String) uuid, resume);
+        map.put((String) uuid, resume);
     }
 
     @Override
     protected void saveResume(Resume resume, Object uuid) {
-        storage.put(resume.getUuid(), resume);
+        map.put(resume.getUuid(), resume);
     }
 
     @Override
     protected Resume getResume(Object uuid) {
-        return storage.get(uuid);
+        return map.get(uuid);
     }
 
     @Override
     protected void deleteResume(Object uuid) {
-        storage.remove(uuid);
+        map.remove(uuid);
     }
 
     @Override
     public void clear() {
-        storage.clear();
+        map.clear();
     }
 
     @Override
     protected List<Resume> getList() {
-        return new ArrayList<>(storage.values());
+        return new ArrayList<>(map.values());
     }
 
     @Override
     public int size() {
-        return storage.size();
+        return map.size();
     }
 
     @Override
