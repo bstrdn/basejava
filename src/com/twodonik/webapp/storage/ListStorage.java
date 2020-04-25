@@ -5,7 +5,7 @@ import com.twodonik.webapp.model.Resume;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListStorage extends AbstractStorage {
+public class ListStorage extends AbstractStorage<Integer> {
 
     private List<Resume> list = new ArrayList<>();
 
@@ -15,23 +15,23 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected void updateResume(Resume resume, Object index) {
-        list.set((int) index, resume);
+    protected void updateResume(Resume resume, Integer index) {
+        list.set(index, resume);
     }
 
     @Override
-    protected void saveResume(Resume resume, Object index) {
+    protected void saveResume(Resume resume, Integer index) {
         list.add(resume);
     }
 
     @Override
-    protected Resume getResume(Object index) {
-        return list.get((int) index);
+    protected Resume getResume(Integer index) {
+        return list.get(index);
     }
 
     @Override
-    protected void deleteResume(Object index) {
-        list.remove((int) index);
+    protected void deleteResume(Integer index) {
+        list.remove(index);
     }
 
     @Override
@@ -45,7 +45,7 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected Object findKey(String uuid) {
+    protected Integer findKey(String uuid) {
         for (int i = 0; i < list.size(); i++)
             if (list.get(i).getUuid().equals(uuid)) {
                 return i;
@@ -54,7 +54,7 @@ public class ListStorage extends AbstractStorage {
     }
 
     @Override
-    protected boolean isExist(Object index) {
-        return ((Integer) index) >= 0;
+    protected boolean isExist(Integer index) {
+        return index >= 0;
     }
 }
