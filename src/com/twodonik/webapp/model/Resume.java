@@ -1,19 +1,23 @@
 package com.twodonik.webapp.model;
 
-import java.sql.Date;
-import java.util.*;
+import com.twodonik.webapp.section.Sections;
 
-import static com.twodonik.webapp.model.SectionType.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Initial resume class
  */
 public class Resume {
 
-    // Unique identifier
     private final String uuid;
-
     private final String fullName;
+
+
+    public Map<SectionTypeContact, String> storageContact = new HashMap<>();
+    public Map<SectionType, Sections> storageSection = new HashMap<>();
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
@@ -26,35 +30,13 @@ public class Resume {
         this.fullName = fullName;
     }
 
-    //тут private должно быть
-    public Map<SectionType, String> storageSectionType1 = new HashMap<>();
-    public Map<SectionType, List> storageSectionType2 = new HashMap<>();
-    public Map<SectionType, Map> storageSectionType3 = new HashMap<>();
-
-    public Map<SectionTypeContact, String> storageSectionTypeContact = new HashMap<>();
-
-    public void setContact(SectionTypeContact contact, String body) {
-        storageSectionTypeContact.put(contact, body);
+    public String getStorageContact(SectionTypeContact typeContact) {
+        return storageContact.get(typeContact);
     }
 
-    public void setSection(SectionType section, String body) {
-        if (section == PERSONAL || section == OBJECTIVE) {
-            storageSectionType1.put(section, body);
-        } else if (section == ACHIEVEMENT || section == QUALIFICATION) {
-            if (!storageSectionType2.containsKey(section)) {
-                storageSectionType2.put(section, new ArrayList());
-            }
-            storageSectionType2.get(section).add(body);
-        } else if (section == EXPERIENCE || section == EDUCATION) {
-            if (!storageSectionType3.containsKey(section)) {
-                storageSectionType3.put(section, new HashMap());
-            }
-            //тут нужен парсер даты из строки body
-            Date moment = new Date(1451665447567L);
-            storageSectionType3.get(section).put(moment, body);
-        }
+    public Sections getStorageSection(SectionType type) {
+        return storageSection.get(type);
     }
-
 
     public String getFullName() {
         return fullName;
