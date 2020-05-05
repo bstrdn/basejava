@@ -1,7 +1,5 @@
 package com.twodonik.webapp.model;
 
-import com.twodonik.webapp.section.Sections;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -16,8 +14,8 @@ public class Resume {
     private final String fullName;
 
 
-    public Map<SectionTypeContact, String> storageContact = new HashMap<>();
-    public Map<SectionType, Sections> storageSection = new HashMap<>();
+    public Map<SectionTypeContact, String> contact = new HashMap<>();
+    public Map<SectionType, AbstractSection> section = new HashMap<>();
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
@@ -31,11 +29,11 @@ public class Resume {
     }
 
     public String getStorageContact(SectionTypeContact typeContact) {
-        return storageContact.get(typeContact);
+        return contact.get(typeContact);
     }
 
-    public Sections getStorageSection(SectionType type) {
-        return storageSection.get(type);
+    public AbstractSection getStorageSection(SectionType type) {
+        return section.get(type);
     }
 
     public String getFullName() {
@@ -54,13 +52,17 @@ public class Resume {
         Resume resume = (Resume) o;
 
         if (!uuid.equals(resume.uuid)) return false;
-        return fullName.equals(resume.fullName);
+        if (!fullName.equals(resume.fullName)) return false;
+        if (!contact.equals(resume.contact)) return false;
+        return section.equals(resume.section);
     }
 
     @Override
     public int hashCode() {
         int result = uuid.hashCode();
         result = 31 * result + fullName.hashCode();
+        result = 31 * result + contact.hashCode();
+        result = 31 * result + section.hashCode();
         return result;
     }
 
