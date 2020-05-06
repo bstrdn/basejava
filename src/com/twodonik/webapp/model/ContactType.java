@@ -1,6 +1,6 @@
 package com.twodonik.webapp.model;
 
-public enum SectionTypeContact {
+public enum ContactType {
     PHONE("Тел."),
     SKYPE("Skype"),
     MAIL("Почта"),
@@ -14,7 +14,7 @@ public enum SectionTypeContact {
 
     private String title;
 
-    private SectionTypeContact(String title) {
+    private ContactType(String title) {
         this.title = title;
     }
 }

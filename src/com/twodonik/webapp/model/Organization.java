@@ -2,7 +2,7 @@ package com.twodonik.webapp.model;
 
 import java.time.YearMonth;
 
-public class Company {
+public class Organization {
     private String company;
 
     private YearMonth startData;
@@ -10,7 +10,7 @@ public class Company {
     private String position;
     private String body;
 
-    public Company(String company, YearMonth startData, YearMonth endData, String position, String body) {
+    public Organization(String company, YearMonth startData, YearMonth endData, String position, String body) {
         this.company = company;
         this.startData = startData;
         this.endData = endData;

@@ -1,9 +1,6 @@
 package com.twodonik.webapp.model;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Initial resume class
@@ -14,8 +11,8 @@ public class Resume {
     private final String fullName;
 
 
-    public Map<SectionTypeContact, String> contact = new HashMap<>();
-    public Map<SectionType, AbstractSection> section = new HashMap<>();
+    public Map<ContactType, String> contact = new EnumMap<>(ContactType.class);
+    public Map<SectionType, AbstractSection> section = new EnumMap<>(SectionType.class);
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
@@ -28,7 +25,7 @@ public class Resume {
         this.fullName = fullName;
     }
 
-    public String getStorageContact(SectionTypeContact typeContact) {
+    public String getStorageContact(ContactType typeContact) {
         return contact.get(typeContact);
     }
 

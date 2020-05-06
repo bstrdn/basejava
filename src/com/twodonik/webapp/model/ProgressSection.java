@@ -2,20 +2,31 @@ package com.twodonik.webapp.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ProgressSection extends AbstractSection {
-    private List<String> list = new ArrayList<>();
+    private List<String> items = new ArrayList<>();
+
+    public ProgressSection(List<String> items) {
+        Objects.requireNonNull(items, "items must not be null");
+        this.items = items;
+    }
 
     public void addList(String s) {
-        list.add(s);
+        items.add(s);
     }
+
+    public List<String> getItems() {
+        return items;
+    }
+
 
     @Override
     public String toString() {
 
         String out = "";
 
-        for (String s : list) {
+        for (String s : items) {
             out += "• " + s + "\n";
         }
 
@@ -29,11 +40,11 @@ public class ProgressSection extends AbstractSection {
 
         ProgressSection that = (ProgressSection) o;
 
-        return list.equals(that.list);
+        return items.equals(that.items);
     }
 
     @Override
     public int hashCode() {
-        return list.hashCode();
+        return items.hashCode();
     }
 }

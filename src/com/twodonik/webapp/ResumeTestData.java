@@ -5,7 +5,7 @@ import com.twodonik.webapp.model.*;
 import java.time.YearMonth;
 
 import static com.twodonik.webapp.model.SectionType.*;
-import static com.twodonik.webapp.model.SectionTypeContact.*;
+import static com.twodonik.webapp.model.ContactType.*;
 
 public class ResumeTestData {
     public static void main(String[] args) {
@@ -15,9 +15,9 @@ public class ResumeTestData {
         resume.contact.put(SKYPE, "petrov.sk");
         resume.contact.put(MAIL, "petrov.sk@gmail.com");
 
-        resume.section.put(PERSONAL, new PersonalSection("Аналитический склад ума, " +
+        resume.section.put(PERSONAL, new TextSection("Аналитический склад ума, " +
                 "сильная логика, креативность, инициативность. Пурист кода и архитектуры."));
-        resume.section.put(OBJECTIVE, new PersonalSection("Ведущий стажировок и " +
+        resume.section.put(OBJECTIVE, new TextSection("Ведущий стажировок и " +
                 "корпоративного обучения по Java Web и Enterprise технологиям"));
 
         ProgressSection achievement = new ProgressSection();
@@ -39,12 +39,12 @@ public class ResumeTestData {
         resume.section.put(ACHIEVEMENT, achievement);
         resume.section.put(QUALIFICATION, qualification);
 
-        ExperienceSection experience = new ExperienceSection();
-        Company jOP = new Company("Java Online Projects",
+        OrganizationSection experience = new OrganizationSection();
+        Organization jOP = new Organization("Java Online Projects",
                 YearMonth.of(2013, 10), null,
                 "Автор проекта", "Создание, организация и проведение Java онлайн проектов и стажировок.");
 
-        Company wrike = new Company("Wrike",
+        Organization wrike = new Organization("Wrike",
                 YearMonth.of(2014, 10), YearMonth.of(2016, 1),
                 "Старший разработчик (backend)", "Проектирование и разработка онлайн платформы управления проектами " +
                 "Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). Двухфакторная аутентификация, " +
@@ -55,13 +55,13 @@ public class ResumeTestData {
 
         resume.section.put(EXPERIENCE, experience);
 
-        ExperienceSection education = new ExperienceSection();
+        OrganizationSection education = new OrganizationSection();
 
-        Company coursera = new Company("Coursera",
+        Organization coursera = new Organization("Coursera",
                 YearMonth.of(2013, 03),
                 YearMonth.of(2013, 05), null,
                 "\"Functional Programming Principles in Scala\" by Martin Odersky");
-        Company luxoft = new Company("Luxoft",
+        Organization luxoft = new Organization("Luxoft",
                 YearMonth.of(2011, 03),
                 YearMonth.of(2011, 04), null,
                 "\"Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"");
@@ -73,10 +73,10 @@ public class ResumeTestData {
 
         System.out.println(resume.getFullName() + "\n");
 
-        for (SectionTypeContact sectionTypeContact : SectionTypeContact.values()) {
-            String contact = resume.getStorageContact(sectionTypeContact);
+        for (ContactType contactType : ContactType.values()) {
+            String contact = resume.getStorageContact(contactType);
             if (contact != null) {
-                System.out.print(sectionTypeContact.getTitle() + ": ");
+                System.out.print(contactType.getTitle() + ": ");
                 System.out.println(contact);
             }
         }
