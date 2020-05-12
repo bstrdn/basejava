@@ -25,11 +25,8 @@ public class OrganizationSection extends AbstractSection {
         String out = "";
 
         for (Organization organization : organizations) {
-            out += organization.getCompany() + "\n" + organization.getStartDate() + " - "
-                    + (organization.getEndDate() == null ? "Сейчас" : organization.getEndDate()) + "     "
-                    + ((organization.getTitle() == null) ? "" : organization.getTitle() + "\n") + organization.getDescription() + "\n";
+            out += organization.toString();
         }
-
         return out;
     }
 

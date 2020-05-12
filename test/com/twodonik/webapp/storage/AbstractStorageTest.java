@@ -1,5 +1,6 @@
 package com.twodonik.webapp.storage;
 
+import com.twodonik.webapp.ResumeTestData;
 import com.twodonik.webapp.exception.ExistStorageException;
 import com.twodonik.webapp.exception.NotExistStorageException;
 import com.twodonik.webapp.model.Resume;
@@ -9,7 +10,8 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public abstract class AbstractStorageTest {
 
@@ -20,7 +22,7 @@ public abstract class AbstractStorageTest {
     protected static final String UUID_3 = "UUID_3";
     protected static final String UUID_4 = "UUID_4";
     protected static final String UUID_5 = "UUID_5";
-    protected static final Resume RESUME_1 = new Resume(UUID_1, "Ivanov Petr Sergeevich");
+    protected static final Resume RESUME_1 = ResumeTestData.getTestResume();
     protected static final Resume RESUME_2 = new Resume(UUID_2, "Smirnov Denis Grigorevich");
     protected static final Resume RESUME_3 = new Resume(UUID_3, "Smirnov Denis Grigorevich");
     protected static final Resume RESUME_4 = new Resume(UUID_4, "Petrov Vasiliy Timofeevich");

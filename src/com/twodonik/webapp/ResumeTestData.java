@@ -2,14 +2,25 @@ package com.twodonik.webapp;
 
 import com.twodonik.webapp.model.*;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.YearMonth;
+import java.util.ArrayList;
+import java.util.List;
 
-import static com.twodonik.webapp.model.SectionType.*;
 import static com.twodonik.webapp.model.ContactType.*;
+import static com.twodonik.webapp.model.SectionType.*;
 
 public class ResumeTestData {
-    public static void main(String[] args) {
-        Resume resume = new Resume("uuid_1", "Petrov Sergey Semenovich");
+    public static void main(String[] args) throws IOException {
+        Resume r = getTestResume();
+        File file = new File(".\\storage\\" + r.getUuid());
+        System.out.println(file.getCanonicalPath());
+
+    }
+
+    public static Resume getTestResume() {
+        Resume resume = new Resume("UUID_1", "Ivanov Petr Sergeevich");
 
         resume.contact.put(PHONE, "+79211234567");
         resume.contact.put(SKYPE, "petrov.sk");
@@ -20,57 +31,76 @@ public class ResumeTestData {
         resume.section.put(OBJECTIVE, new TextSection("Ведущий стажировок и " +
                 "корпоративного обучения по Java Web и Enterprise технологиям"));
 
-        ProgressSection achievement = new ProgressSection();
-        ProgressSection qualification = new ProgressSection();
-
-        achievement.addList("С 2013 года: разработка проектов \"Разработка Web приложения\",\"Java " +
+        List<String> achievement = new ArrayList<>();
+        achievement.add("С 2013 года: разработка проектов \"Разработка Web приложения\",\"Java " +
                 "Enterprise\", \"Многомодульный maven. Многопоточность. XML (JAXB/StAX). Веб сервисы (JAX-RS/SOAP). " +
                 "Удаленное взаимодействие (JMS/AKKA)\". Организация онлайн стажировок и ведение проектов. " +
                 "Более 1000 выпускников.");
-        achievement.addList("Реализация двухфакторной аутентификации для онлайн платформы управления проектами Wrike. " +
+        achievement.add("Реализация двухфакторной аутентификации для онлайн платформы управления проектами Wrike. " +
                 "Интеграция с Twilio, DuoSecurity, Google Authenticator, Jira, Zendesk.");
-        achievement.addList("Налаживание процесса разработки и непрерывной интеграции ERP системы River BPM. Интеграция " +
+        achievement.add("Налаживание процесса разработки и непрерывной интеграции ERP системы River BPM. Интеграция " +
                 "с 1С, Bonita BPM, CMIS, LDAP. Разработка приложения управления окружением на стеке: Scala/Play/Anorm/JQuery." +
                 " Разработка SSO аутентификации и авторизации различных ERP модулей, интеграция CIFS/SMB java сервера.");
+        resume.section.put(ACHIEVEMENT, new ProgressSection(achievement));
 
-        qualification.addList("JEE AS: GlassFish (v2.1, v3), OC4J, JBoss, Tomcat, Jetty, WebLogic, WSO2");
-        qualification.addList("Version control: Subversion, Git, Mercury, ClearCase, Perforce");
+        List<String> qualification = new ArrayList<>();
+        qualification.add("JEE AS: GlassFish (v2.1, v3), OC4J, JBoss, Tomcat, Jetty, WebLogic, WSO2");
+        qualification.add("Version control: Subversion, Git, Mercury, ClearCase, Perforce");
+        resume.section.put(QUALIFICATION, new ProgressSection(qualification));
 
-        resume.section.put(ACHIEVEMENT, achievement);
-        resume.section.put(QUALIFICATION, qualification);
+        List<Organization> experienceList = new ArrayList<>();
 
-        OrganizationSection experience = new OrganizationSection();
-        Organization jOP = new Organization("Java Online Projects",
-                YearMonth.of(2013, 10), null,
-                "Автор проекта", "Создание, организация и проведение Java онлайн проектов и стажировок.");
+        List<Position> positionsJOP = new ArrayList<>();
+        positionsJOP.add(new Position(YearMonth.of(2013, 10), null,
+                "Автор проекта", "Создание, организация и проведение Java онлайн проектов и " +
+                "стажировок."));
+        Company companyJOP = new Company("Java Online Projects", "http://javaops.ru/");
+        Organization jOP = new Organization(companyJOP, positionsJOP);
+        experienceList.add(jOP);
 
-        Organization wrike = new Organization("Wrike",
-                YearMonth.of(2014, 10), YearMonth.of(2016, 1),
+        List<Position> positionsWrike = new ArrayList<>();
+        positionsWrike.add(new Position(YearMonth.of(2014, 10), YearMonth.of(2016, 1),
                 "Старший разработчик (backend)", "Проектирование и разработка онлайн платформы управления проектами " +
                 "Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). Двухфакторная аутентификация, " +
-                "авторизация по OAuth1, OAuth2, JWT SSO.");
+                "авторизация по OAuth1, OAuth2, JWT SSO."));
+        Company companyWrike = new Company("Wrike", "https://www.wrike.com/");
+        Organization wrike = new Organization(companyWrike, positionsWrike);
+        experienceList.add(wrike);
 
-        experience.addList(jOP);
-        experience.addList(wrike);
+        List<Position> positionsAlcatel = new ArrayList<>();
+        positionsAlcatel.add(new Position(YearMonth.of(1997, 9), YearMonth.of(2005, 1),
+                "Инженер по аппаратному и программному тестрованию", "Тестирование, отладка" +
+                ", внедрение ПО цифровой телефонной станции Alcatel 1000"));
+        Company companyAlcatel = new Company("Alcatel", "http://www.alcatel.ru/");
+        Organization alcatel = new Organization(companyAlcatel, positionsAlcatel);
+        experienceList.add(alcatel);
 
-        resume.section.put(EXPERIENCE, experience);
+        OrganizationSection organizationSection = new OrganizationSection(experienceList);
+        resume.section.put(EXPERIENCE, organizationSection);
 
-        OrganizationSection education = new OrganizationSection();
 
-        Organization coursera = new Organization("Coursera",
-                YearMonth.of(2013, 03),
-                YearMonth.of(2013, 05), null,
-                "\"Functional Programming Principles in Scala\" by Martin Odersky");
-        Organization luxoft = new Organization("Luxoft",
-                YearMonth.of(2011, 03),
-                YearMonth.of(2011, 04), null,
-                "\"Курс \"Объектно-ориентированный анализ ИС. Концептуальное моделирование на UML.\"");
+        List<Organization> educationList = new ArrayList<>();
 
-        education.addList(coursera);
-        education.addList(luxoft);
+        List<Position> positionsAlcatel2 = new ArrayList<>();
+        positionsAlcatel2.add(new Position(YearMonth.of(1997, 9), YearMonth.of(1998, 3),
+                null, "6 месяцев обучения цифровым телефонным сетям (Москва)"));
+        Organization Alcatel2 = new Organization(companyAlcatel, positionsAlcatel2);
+        educationList.add(Alcatel2);
 
-        resume.section.put(EDUCATION, education);
+        Company companyITMO = new Company("ITMO", "http://www.itmo.ru/");
+        List<Position> positionsITMO = new ArrayList<>();
+        positionsITMO.add(new Position(YearMonth.of(1993, 9), YearMonth.of(1996, 7), null, "Аспирантура (Программист С, С++)"));
+        positionsITMO.add(new Position(YearMonth.of(1987, 9), YearMonth.of(1993, 7), null, "Инженер (программист Fortran, C)"));
+        Organization itmo = new Organization(companyITMO, positionsITMO);
+        educationList.add(itmo);
 
+        OrganizationSection educationSection = new OrganizationSection(educationList);
+        resume.section.put(EDUCATION, educationSection);
+
+        return resume;
+    }
+
+    public void printRecume(Resume resume) {
         System.out.println(resume.getFullName() + "\n");
 
         for (ContactType contactType : ContactType.values()) {
