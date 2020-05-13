@@ -12,12 +12,14 @@ public class MainFile {
     }
 
     public static void getAllFile(File directory) {
-        for (File file1 : directory.listFiles()) {
-            if (file1.isDirectory()) {
-                System.out.println("DIRECTORY: " + file1.getName());
-                getAllFile(file1);
+        if (directory.listFiles() != null) {
+            for (File file1 : directory.listFiles()) {
+                if (file1.isDirectory()) {
+                    System.out.println("DIRECTORY: " + file1.getName());
+                    getAllFile(file1);
+                }
+                System.out.println(file1.getName());
             }
-            System.out.println(file1.getName());
         }
     }
 }

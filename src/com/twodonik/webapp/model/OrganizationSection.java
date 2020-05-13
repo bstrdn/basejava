@@ -1,11 +1,10 @@
 package com.twodonik.webapp.model;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class OrganizationSection extends AbstractSection {
-    private List<Organization> organizations = new ArrayList();
+    private List<Organization> organizations;
 
     public void addList(Organization organization) {
         organizations.add(organization);

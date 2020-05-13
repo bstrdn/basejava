@@ -22,11 +22,11 @@ public abstract class AbstractStorageTest {
     protected static final String UUID_3 = "UUID_3";
     protected static final String UUID_4 = "UUID_4";
     protected static final String UUID_5 = "UUID_5";
-    protected static final Resume RESUME_1 = ResumeTestData.getTestResume();
-    protected static final Resume RESUME_2 = new Resume(UUID_2, "Smirnov Denis Grigorevich");
-    protected static final Resume RESUME_3 = new Resume(UUID_3, "Smirnov Denis Grigorevich");
-    protected static final Resume RESUME_4 = new Resume(UUID_4, "Petrov Vasiliy Timofeevich");
-    protected static final Resume RESUME_5 = new Resume(UUID_5, "Sidorov Artur Denisovich");
+    protected static final Resume RESUME_1 = ResumeTestData.getTestResume(UUID_1, "Ivanov Petr Sergeevich");
+    protected static final Resume RESUME_2 = ResumeTestData.getTestResume(UUID_2, "Smirnov Denis Grigorevich");
+    protected static final Resume RESUME_3 = ResumeTestData.getTestResume(UUID_3, "Smirnov Denis Grigorevich");
+    protected static final Resume RESUME_4 = ResumeTestData.getTestResume(UUID_4, "Petrov Vasiliy Timofeevich");
+    protected static final Resume RESUME_5 = ResumeTestData.getTestResume(UUID_5, "Sidorov Artur Denisovich");
 
     public AbstractStorageTest(Storage storage) {
         this.storage = storage;
@@ -98,7 +98,7 @@ public abstract class AbstractStorageTest {
         List<Resume> actualResume = storage.getAllSorted();
         List<Resume> expectedResume = Arrays.asList(RESUME_1, RESUME_4, RESUME_2, RESUME_3);
         assertEquals(4, expectedResume.size());
-        assertEquals(actualResume, expectedResume);
+        assertEquals(expectedResume, actualResume);
     }
 
     @Test

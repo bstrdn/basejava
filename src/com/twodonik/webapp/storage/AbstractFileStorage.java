@@ -65,8 +65,10 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     protected List<Resume> getList() {
         List<Resume> lr = new ArrayList<>();
-        for (File f : directory.listFiles()) {
-            lr.add(doRead(f));
+        if (directory.listFiles() != null) {
+            for (File f : directory.listFiles()) {
+                lr.add(doRead(f));
+            }
         }
         return lr;
     }

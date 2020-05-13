@@ -13,14 +13,14 @@ import static com.twodonik.webapp.model.SectionType.*;
 
 public class ResumeTestData {
     public static void main(String[] args) throws IOException {
-        Resume r = getTestResume();
+        Resume r = getTestResume("UUID_1", "Sidorov Artur Denisovich");
         File file = new File(".\\storage\\" + r.getUuid());
         System.out.println(file.getCanonicalPath());
 
     }
 
-    public static Resume getTestResume() {
-        Resume resume = new Resume("UUID_1", "Ivanov Petr Sergeevich");
+    public static Resume getTestResume(String uuid, String fullName) {
+        Resume resume = new Resume(uuid, fullName);
 
         resume.contact.put(PHONE, "+79211234567");
         resume.contact.put(SKYPE, "petrov.sk");
@@ -54,8 +54,8 @@ public class ResumeTestData {
         positionsJOP.add(new Position(YearMonth.of(2013, 10), null,
                 "Автор проекта", "Создание, организация и проведение Java онлайн проектов и " +
                 "стажировок."));
-        Company companyJOP = new Company("Java Online Projects", "http://javaops.ru/");
-        Organization jOP = new Organization(companyJOP, positionsJOP);
+        Link linkJOP = new Link("Java Online Projects", "http://javaops.ru/");
+        Organization jOP = new Organization(linkJOP, positionsJOP);
         experienceList.add(jOP);
 
         List<Position> positionsWrike = new ArrayList<>();
@@ -63,16 +63,16 @@ public class ResumeTestData {
                 "Старший разработчик (backend)", "Проектирование и разработка онлайн платформы управления проектами " +
                 "Wrike (Java 8 API, Maven, Spring, MyBatis, Guava, Vaadin, PostgreSQL, Redis). Двухфакторная аутентификация, " +
                 "авторизация по OAuth1, OAuth2, JWT SSO."));
-        Company companyWrike = new Company("Wrike", "https://www.wrike.com/");
-        Organization wrike = new Organization(companyWrike, positionsWrike);
+        Link linkWrike = new Link("Wrike", "https://www.wrike.com/");
+        Organization wrike = new Organization(linkWrike, positionsWrike);
         experienceList.add(wrike);
 
         List<Position> positionsAlcatel = new ArrayList<>();
         positionsAlcatel.add(new Position(YearMonth.of(1997, 9), YearMonth.of(2005, 1),
                 "Инженер по аппаратному и программному тестрованию", "Тестирование, отладка" +
                 ", внедрение ПО цифровой телефонной станции Alcatel 1000"));
-        Company companyAlcatel = new Company("Alcatel", "http://www.alcatel.ru/");
-        Organization alcatel = new Organization(companyAlcatel, positionsAlcatel);
+        Link linkAlcatel = new Link("Alcatel", "http://www.alcatel.ru/");
+        Organization alcatel = new Organization(linkAlcatel, positionsAlcatel);
         experienceList.add(alcatel);
 
         OrganizationSection organizationSection = new OrganizationSection(experienceList);
@@ -84,14 +84,14 @@ public class ResumeTestData {
         List<Position> positionsAlcatel2 = new ArrayList<>();
         positionsAlcatel2.add(new Position(YearMonth.of(1997, 9), YearMonth.of(1998, 3),
                 null, "6 месяцев обучения цифровым телефонным сетям (Москва)"));
-        Organization Alcatel2 = new Organization(companyAlcatel, positionsAlcatel2);
+        Organization Alcatel2 = new Organization(linkAlcatel, positionsAlcatel2);
         educationList.add(Alcatel2);
 
-        Company companyITMO = new Company("ITMO", "http://www.itmo.ru/");
+        Link linkITMO = new Link("ITMO", "http://www.itmo.ru/");
         List<Position> positionsITMO = new ArrayList<>();
         positionsITMO.add(new Position(YearMonth.of(1993, 9), YearMonth.of(1996, 7), null, "Аспирантура (Программист С, С++)"));
         positionsITMO.add(new Position(YearMonth.of(1987, 9), YearMonth.of(1993, 7), null, "Инженер (программист Fortran, C)"));
-        Organization itmo = new Organization(companyITMO, positionsITMO);
+        Organization itmo = new Organization(linkITMO, positionsITMO);
         educationList.add(itmo);
 
         OrganizationSection educationSection = new OrganizationSection(educationList);
