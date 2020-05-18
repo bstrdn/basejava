@@ -1,14 +1,17 @@
 package com.twodonik.webapp.model;
 
+import java.io.Serializable;
 import java.time.YearMonth;
 import java.util.Objects;
+import static com.twodonik.webapp.util.DateUtil.*;
 
-public class Position {
+public class Position implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private final YearMonth startDate;
     private final YearMonth endDate;
     private final String title;
     private final String description;
-
 
     public Position(YearMonth startDate, YearMonth endDate, String title, String description) {
         Objects.requireNonNull(startDate, "startDate must not be null");
@@ -17,6 +20,10 @@ public class Position {
         this.endDate = endDate;
         this.title = title;
         this.description = description;
+    }
+
+    public Position(YearMonth startDate, String title, String description) {
+        this(startDate, NOW, title,description);
     }
 
     @Override

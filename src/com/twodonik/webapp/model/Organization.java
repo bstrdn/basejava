@@ -1,14 +1,22 @@
 package com.twodonik.webapp.model;
 
+import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class Organization {
+public class Organization implements Serializable {
+    private static final long serialVersionUID = 1L;
+
 
     private final Link link;
     private List<Position> positions;
 
 
+    public Organization(Link link, Position... positions) {
+        this(link, Arrays.asList(positions));
+
+    }
     public Organization(Link link, List<Position> positions) {
         Objects.requireNonNull(positions, "positions must not be null");
         Objects.requireNonNull(link, "company must not be null");

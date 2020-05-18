@@ -44,7 +44,6 @@ public abstract class AbstractStorage<SK> implements Storage {
 
     public void delete(String uuid) {
         LOG.info("Delete " + uuid);
-
         deleteResume(getKeyIfExist(uuid));
     }
 
