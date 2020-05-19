@@ -7,24 +7,30 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
-public abstract class AbstractPatchStorage extends AbstractStorage<Path> {
+public abstract class AbstractPathStorage extends AbstractStorage<Path> {
     private Path directory;
+    SaveStrategy saveStrategy;
 
-    protected abstract void doWrite(Resume resume, OutputStream os) throws IOException;
+    protected void doWrite(Resume resume, OutputStream os) {
+        saveStrategy.doWrite(resume, os);
+    }
 
-    protected abstract Resume doRead(InputStream is) throws IOException;
+    protected Resume doRead(InputStream is) {
+        return saveStrategy.doRead(is);
+    }
 
-    protected AbstractPatchStorage(String dir) {
+    protected AbstractPathStorage(String dir, SaveStrategy saveStrategy) {
         Path directory = Paths.get(dir);
         Objects.requireNonNull(directory, "directory must not be null");
         if (!Files.isDirectory(directory) || !Files.isWritable(directory)) {
             throw new IllegalArgumentException(dir + "is not readable/writable");
         }
         this.directory = directory;
+        this.saveStrategy = saveStrategy;
     }
 
     @Override
@@ -67,22 +73,19 @@ public abstract class AbstractPatchStorage extends AbstractStorage<Path> {
 
     @Override
     protected Path findKey(String uuid) {
-        return Paths.get(directory.toString(), uuid);
+        return directory.resolve(uuid);
     }
 
     @Override
     protected boolean isExist(Path dir) {
-        return Files.exists(dir);
+        return Files.isRegularFile(dir);
     }
+
 
     @Override
     protected List<Resume> getList() {
-        List<Resume> list = new ArrayList<>();
         try {
-            Files.list(directory).forEach(path -> {
-                list.add(getResume(path));
-            });
-            return list;
+            return Files.list(directory).map(this::getResume).collect(Collectors.toList());
         } catch (IOException e) {
             throw new StorageException("get list exception", null, e);
         }
@@ -93,7 +96,7 @@ public abstract class AbstractPatchStorage extends AbstractStorage<Path> {
         try {
             Files.list(directory).forEach(this::deleteResume);
         } catch (IOException e) {
-            throw new StorageException("delete exception", null);
+            throw new StorageException("delete exception", null, e);
         }
     }
 

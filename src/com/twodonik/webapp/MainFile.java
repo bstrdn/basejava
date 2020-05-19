@@ -1,11 +1,6 @@
 package com.twodonik.webapp;
 
 
-import com.twodonik.webapp.model.Resume;
-import com.twodonik.webapp.storage.ObjectStreamPathStorage;
-import com.twodonik.webapp.storage.ObjectStreamStorage;
-import com.twodonik.webapp.storage.SaveFile;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -18,20 +13,6 @@ public class MainFile {
     public static void main(String[] args) throws IOException {
         File directory = new File(".\\src");
         getAllFile(directory, "");
-
-        ObjectStreamPathStorage osps = new ObjectStreamPathStorage("E:\\Java\\basejava\\storage");
-        ObjectStreamStorage oss = new ObjectStreamStorage(STORAGE_DIR);
-        Resume r1 = new Resume("uuid11", "Dima");
-        Resume r2 = new Resume("uuid12", "Olya");
-
-        SaveFile sf = new SaveFile(osps);
-
-        sf.save(r1);
-
-        sf.setSaveStrategy(oss);
-
-        sf.save(r2);
-
     }
 
 
