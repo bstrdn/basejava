@@ -8,19 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class AbstractFileStorage extends AbstractStorage<File> {
+public class FileStorage extends AbstractStorage<File> {
     private File directory;
     SaveStrategy saveStrategy;
 
-    protected void doWrite(Resume resume, OutputStream os) {
-        saveStrategy.doWrite(resume, os);
-    }
-
-    protected Resume doRead(InputStream is) {
-        return saveStrategy.doRead(is);
-    }
-
-    protected AbstractFileStorage(File directory, SaveStrategy saveStrategy) {
+    protected FileStorage(File directory, SaveStrategy saveStrategy) {
         Objects.requireNonNull(directory, "directory must not be null");
         if (!directory.isDirectory()) {
             throw new IllegalArgumentException(directory.getAbsolutePath() + "is not directory");
@@ -35,7 +27,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     protected void updateResume(Resume resume, File file) {
         try {
-            doWrite(resume, new BufferedOutputStream(new FileOutputStream(file)));
+            saveStrategy.doWrite(resume, new BufferedOutputStream(new FileOutputStream(file)));
         } catch (IOException e) {
             throw new StorageException("IO error", resume.getUuid(), e);
         }
@@ -54,7 +46,7 @@ public abstract class AbstractFileStorage extends AbstractStorage<File> {
     @Override
     protected Resume getResume(File file) {
         try {
-            return doRead(new BufferedInputStream(new FileInputStream(file)));
+            return saveStrategy.doRead(new BufferedInputStream(new FileInputStream(file)));
         } catch (IOException e) {
             throw new StorageException("io error", file.getName(), e);
         }
