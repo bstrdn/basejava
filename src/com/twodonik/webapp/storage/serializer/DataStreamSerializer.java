@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.twodonik.webapp.model.SectionType.*;
+
 public class DataStreamSerializer implements StreamSerializer {
     @Override
     public void doWrite(Resume resume, OutputStream os) throws IOException {
@@ -23,12 +25,12 @@ public class DataStreamSerializer implements StreamSerializer {
             }
 
             Map<SectionType, AbstractSection> section = resume.getSection();
-            dos.writeUTF(((TextSection) section.get(SectionType.OBJECTIVE)).getContent());
-            dos.writeUTF(((TextSection) section.get(SectionType.PERSONAL)).getContent());
-            writeListSection(dos, section, SectionType.ACHIEVEMENT);
-            writeListSection(dos, section, SectionType.QUALIFICATION);
-            writeOrganizationSection(dos, section, SectionType.EXPERIENCE);
-            writeOrganizationSection(dos, section, SectionType.EDUCATION);
+            dos.writeUTF(((TextSection) section.get(OBJECTIVE)).getContent());
+            dos.writeUTF(((TextSection) section.get(PERSONAL)).getContent());
+            writeListSection(dos, section, ACHIEVEMENT);
+            writeListSection(dos, section, QUALIFICATION);
+            writeOrganizationSection(dos, section, EXPERIENCE);
+            writeOrganizationSection(dos, section, EDUCATION);
         }
     }
 
@@ -42,12 +44,12 @@ public class DataStreamSerializer implements StreamSerializer {
                 resume.addContact(ContactType.valueOf(dis.readUTF()), dis.readUTF());
             }
             //section
-            resume.addSection(SectionType.OBJECTIVE, new TextSection(dis.readUTF()));
-            resume.addSection(SectionType.PERSONAL, new TextSection(dis.readUTF()));
-            resume.addSection(SectionType.ACHIEVEMENT, readListSection(dis));
-            resume.addSection(SectionType.QUALIFICATION, readListSection(dis));
-            resume.addSection(SectionType.EXPERIENCE, readOrganizationSection(dis));
-            resume.addSection(SectionType.EDUCATION, readOrganizationSection(dis));
+            resume.addSection(OBJECTIVE, new TextSection(dis.readUTF()));
+            resume.addSection(PERSONAL, new TextSection(dis.readUTF()));
+            resume.addSection(ACHIEVEMENT, readListSection(dis));
+            resume.addSection(QUALIFICATION, readListSection(dis));
+            resume.addSection(EXPERIENCE, readOrganizationSection(dis));
+            resume.addSection(EDUCATION, readOrganizationSection(dis));
             return resume;
         }
     }
