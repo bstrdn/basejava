@@ -14,7 +14,7 @@ public enum SectionType {
 
     private String title;
 
-    private SectionType (String title) {
+    private SectionType(String title) {
         this.title = title;
     }
 }

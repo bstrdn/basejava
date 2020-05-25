@@ -1,21 +1,29 @@
 package com.twodonik.webapp.model;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 import java.util.*;
 
 /**
  * Initial resume class
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Resume implements Serializable {
     private static final long serialVersionUID = 1L;
 
 
-    private final String uuid;
-    private final String fullName;
+    private String uuid;
+    private String fullName;
 
 
     public Map<ContactType, String> contact = new EnumMap<>(ContactType.class);
     public Map<SectionType, AbstractSection> section = new EnumMap<>(SectionType.class);
+
+    public Resume() {
+    }
 
     public Resume(String fullName) {
         this(UUID.randomUUID().toString(), fullName);
@@ -28,12 +36,31 @@ public class Resume implements Serializable {
         this.fullName = fullName;
     }
 
+    public void addSection (SectionType type, AbstractSection abstractSection) {
+        section.put(type, abstractSection);
+    }
+
+    public Map<ContactType, String> getContact() {
+        return contact;
+    }
+
+    public void setSection(Map<SectionType, AbstractSection> section) {
+        this.section = section;
+    }
+
+    public void addContact(ContactType contactType, String string) {
+        contact.put(contactType, string);
+    }
+
     public String getStorageContact(ContactType typeContact) {
         return contact.get(typeContact);
     }
 
     public AbstractSection getStorageSection(SectionType type) {
         return section.get(type);
+    }
+    public Map<SectionType, AbstractSection> getSection (){
+        return section;
     }
 
     public String getFullName() {
@@ -48,22 +75,16 @@ public class Resume implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Resume resume = (Resume) o;
-
-        if (!uuid.equals(resume.uuid)) return false;
-        if (!fullName.equals(resume.fullName)) return false;
-        if (!contact.equals(resume.contact)) return false;
-        return section.equals(resume.section);
+        return uuid.equals(resume.uuid) &&
+                fullName.equals(resume.fullName) &&
+                contact.equals(resume.contact) &&
+                section.equals(resume.section);
     }
 
     @Override
     public int hashCode() {
-        int result = uuid.hashCode();
-        result = 31 * result + fullName.hashCode();
-        result = 31 * result + contact.hashCode();
-        result = 31 * result + section.hashCode();
-        return result;
+        return Objects.hash(uuid, fullName, contact, section);
     }
 
     @Override

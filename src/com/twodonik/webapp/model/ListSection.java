@@ -5,15 +5,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class ProgressSection extends AbstractSection {
+public class ListSection extends AbstractSection {
     private static final long serialVersionUID = 1L;
 
     private List<String> items = new ArrayList<>();
 
-    public ProgressSection(String... items) {
+    public ListSection() {
+    }
+
+    public ListSection(String... items) {
         this(Arrays.asList(items));
     }
-    public ProgressSection(List<String> items) {
+    public ListSection(List<String> items) {
         Objects.requireNonNull(items, "items must not be null");
         this.items = items;
     }
@@ -44,7 +47,7 @@ public class ProgressSection extends AbstractSection {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        ProgressSection that = (ProgressSection) o;
+        ListSection that = (ListSection) o;
 
         return items.equals(that.items);
     }

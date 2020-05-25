@@ -1,6 +1,7 @@
 package com.twodonik.webapp;
 
 import com.twodonik.webapp.model.*;
+import com.twodonik.webapp.util.DateUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,17 +42,17 @@ public class ResumeTestData {
         achievement.add("Налаживание процесса разработки и непрерывной интеграции ERP системы River BPM. Интеграция " +
                 "с 1С, Bonita BPM, CMIS, LDAP. Разработка приложения управления окружением на стеке: Scala/Play/Anorm/JQuery." +
                 " Разработка SSO аутентификации и авторизации различных ERP модулей, интеграция CIFS/SMB java сервера.");
-        resume.section.put(ACHIEVEMENT, new ProgressSection(achievement));
+        resume.section.put(ACHIEVEMENT, new ListSection(achievement));
 
         List<String> qualification = new ArrayList<>();
         qualification.add("JEE AS: GlassFish (v2.1, v3), OC4J, JBoss, Tomcat, Jetty, WebLogic, WSO2");
         qualification.add("Version control: Subversion, Git, Mercury, ClearCase, Perforce");
-        resume.section.put(QUALIFICATION, new ProgressSection(qualification));
+        resume.section.put(QUALIFICATION, new ListSection(qualification));
 
         List<Organization> experienceList = new ArrayList<>();
 
         List<Position> positionsJOP = new ArrayList<>();
-        positionsJOP.add(new Position(YearMonth.of(2013, 10), null,
+        positionsJOP.add(new Position(YearMonth.of(2013, 10), DateUtil.NOW,
                 "Автор проекта", "Создание, организация и проведение Java онлайн проектов и " +
                 "стажировок."));
         Link linkJOP = new Link("Java Online Projects", "http://javaops.ru/");
@@ -83,14 +84,14 @@ public class ResumeTestData {
 
         List<Position> positionsAlcatel2 = new ArrayList<>();
         positionsAlcatel2.add(new Position(YearMonth.of(1997, 9), YearMonth.of(1998, 3),
-                null, "6 месяцев обучения цифровым телефонным сетям (Москва)"));
+                " ", "6 месяцев обучения цифровым телефонным сетям (Москва)"));
         Organization Alcatel2 = new Organization(linkAlcatel, positionsAlcatel2);
         educationList.add(Alcatel2);
 
         Link linkITMO = new Link("ITMO", "http://www.itmo.ru/");
         List<Position> positionsITMO = new ArrayList<>();
-        positionsITMO.add(new Position(YearMonth.of(1993, 9), YearMonth.of(1996, 7), null, "Аспирантура (Программист С, С++)"));
-        positionsITMO.add(new Position(YearMonth.of(1987, 9), YearMonth.of(1993, 7), null, "Инженер (программист Fortran, C)"));
+        positionsITMO.add(new Position(YearMonth.of(1993, 9), YearMonth.of(1996, 7), " ", "Аспирантура (Программист С, С++)"));
+        positionsITMO.add(new Position(YearMonth.of(1987, 9), YearMonth.of(1993, 7), " ", "Инженер (программист Fortran, C)"));
         Organization itmo = new Organization(linkITMO, positionsITMO);
         educationList.add(itmo);
 

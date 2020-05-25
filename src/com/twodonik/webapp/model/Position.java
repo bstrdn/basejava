@@ -1,5 +1,8 @@
 package com.twodonik.webapp.model;
 
+import com.twodonik.webapp.util.YearMonthAdapter;
+
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.YearMonth;
 import java.util.Objects;
@@ -8,10 +11,12 @@ import static com.twodonik.webapp.util.DateUtil.*;
 public class Position implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private final YearMonth startDate;
-    private final YearMonth endDate;
-    private final String title;
-    private final String description;
+    @XmlJavaTypeAdapter(YearMonthAdapter.class)
+    private YearMonth startDate;
+    @XmlJavaTypeAdapter(YearMonthAdapter.class)
+    private YearMonth endDate;
+    private String title;
+    private String description;
 
     public Position(YearMonth startDate, YearMonth endDate, String title, String description) {
         Objects.requireNonNull(startDate, "startDate must not be null");
@@ -24,6 +29,25 @@ public class Position implements Serializable {
 
     public Position(YearMonth startDate, String title, String description) {
         this(startDate, NOW, title,description);
+    }
+
+    public Position() {
+    }
+
+    public YearMonth getStartDate() {
+        return startDate;
+    }
+
+    public YearMonth getEndDate() {
+        return endDate;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     @Override
