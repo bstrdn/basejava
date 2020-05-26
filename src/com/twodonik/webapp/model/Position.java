@@ -2,12 +2,15 @@ package com.twodonik.webapp.model;
 
 import com.twodonik.webapp.util.YearMonthAdapter;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.YearMonth;
 import java.util.Objects;
 import static com.twodonik.webapp.util.DateUtil.*;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Position implements Serializable {
     private static final long serialVersionUID = 1L;
 

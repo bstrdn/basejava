@@ -14,13 +14,13 @@ import static com.twodonik.webapp.model.SectionType.*;
 
 public class ResumeTestData {
     public static void main(String[] args) throws IOException {
-        Resume r = getTestResume("UUID_1", "Sidorov Artur Denisovich");
+        Resume r = getTestResume1("UUID_1", "Sidorov Artur Denisovich");
         File file = new File(".\\storage\\" + r.getUuid());
         System.out.println(file.getCanonicalPath());
 
     }
 
-    public static Resume getTestResume(String uuid, String fullName) {
+    public static Resume getTestResume1(String uuid, String fullName) {
         Resume resume = new Resume(uuid, fullName);
 
         resume.contact.put(PHONE, "+79211234567");
@@ -92,6 +92,73 @@ public class ResumeTestData {
         List<Position> positionsITMO = new ArrayList<>();
         positionsITMO.add(new Position(YearMonth.of(1993, 9), YearMonth.of(1996, 7), " ", "Аспирантура (Программист С, С++)"));
         positionsITMO.add(new Position(YearMonth.of(1987, 9), YearMonth.of(1993, 7), " ", "Инженер (программист Fortran, C)"));
+        Organization itmo = new Organization(linkITMO, positionsITMO);
+        educationList.add(itmo);
+
+        OrganizationSection educationSection = new OrganizationSection(educationList);
+        resume.section.put(EDUCATION, educationSection);
+
+        return resume;
+    }
+
+    public static Resume getTestResume2(String uuid, String fullName) {
+        Resume resume = new Resume(uuid, fullName);
+
+        resume.contact.put(PHONE, "+79211234567");
+
+        resume.section.put(PERSONAL, new TextSection("PERSONAL"));
+        resume.section.put(OBJECTIVE, new TextSection("OBJECTIVE"));
+
+        List<String> achievement = new ArrayList<>();
+        achievement.add("1");
+        achievement.add("2");
+        achievement.add("3");
+        resume.section.put(ACHIEVEMENT, new ListSection(achievement));
+
+        List<String> qualification = new ArrayList<>();
+        qualification.add("11");
+        qualification.add("22");
+        resume.section.put(QUALIFICATION, new ListSection(qualification));
+
+        List<Organization> experienceList = new ArrayList<>();
+
+        List<Position> positionsJOP = new ArrayList<>();
+        positionsJOP.add(new Position(YearMonth.of(2013, 10), DateUtil.NOW,
+                "33", "444"));
+        Link linkJOP = new Link("Java Online Projects", "http://javaops.ru/");
+        Organization jOP = new Organization(linkJOP, positionsJOP);
+        experienceList.add(jOP);
+
+        List<Position> positionsWrike = new ArrayList<>();
+        positionsWrike.add(new Position(YearMonth.of(2014, 10), YearMonth.of(2016, 1),
+                "55", "333"));
+        Link linkWrike = new Link("Wrike", "https://www.wrike.com/");
+        Organization wrike = new Organization(linkWrike, positionsWrike);
+        experienceList.add(wrike);
+
+        List<Position> positionsAlcatel = new ArrayList<>();
+        positionsAlcatel.add(new Position(YearMonth.of(1997, 9), YearMonth.of(2005, 1),
+                "66", "77"));
+        Link linkAlcatel = new Link("Alcatel", "http://www.alcatel.ru/");
+        Organization alcatel = new Organization(linkAlcatel, positionsAlcatel);
+        experienceList.add(alcatel);
+
+        OrganizationSection organizationSection = new OrganizationSection(experienceList);
+        resume.section.put(EXPERIENCE, organizationSection);
+
+
+        List<Organization> educationList = new ArrayList<>();
+
+        List<Position> positionsAlcatel2 = new ArrayList<>();
+        positionsAlcatel2.add(new Position(YearMonth.of(1997, 9), YearMonth.of(1998, 3),
+                " ", "88"));
+        Organization Alcatel2 = new Organization(linkAlcatel, positionsAlcatel2);
+        educationList.add(Alcatel2);
+
+        Link linkITMO = new Link("ITMO", "http://www.itmo.ru/");
+        List<Position> positionsITMO = new ArrayList<>();
+        positionsITMO.add(new Position(YearMonth.of(1993, 9), YearMonth.of(1996, 7), " ", "00"));
+        positionsITMO.add(new Position(YearMonth.of(1987, 9), YearMonth.of(1993, 7), " ", "99"));
         Organization itmo = new Organization(linkITMO, positionsITMO);
         educationList.add(itmo);
 
