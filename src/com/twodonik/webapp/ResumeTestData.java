@@ -132,19 +132,19 @@ public class ResumeTestData {
         List<Position> positionsWrike = new ArrayList<>();
         positionsWrike.add(new Position(YearMonth.of(2014, 10), YearMonth.of(2016, 1),
                 "55", "333"));
-        Link linkWrike = new Link("Wrike", "https://www.wrike.com/");
+        Link linkWrike = new Link("Wrike");
         Organization wrike = new Organization(linkWrike, positionsWrike);
         experienceList.add(wrike);
 
         List<Position> positionsAlcatel = new ArrayList<>();
         positionsAlcatel.add(new Position(YearMonth.of(1997, 9), YearMonth.of(2005, 1),
                 "66", "77"));
-        Link linkAlcatel = new Link("Alcatel", "http://www.alcatel.ru/");
+        Link linkAlcatel = new Link("Alcatel");
         Organization alcatel = new Organization(linkAlcatel, positionsAlcatel);
         experienceList.add(alcatel);
 
         OrganizationSection organizationSection = new OrganizationSection(experienceList);
-        resume.section.put(EXPERIENCE, organizationSection);
+        //  resume.section.put(EXPERIENCE, organizationSection);
 
 
         List<Organization> educationList = new ArrayList<>();

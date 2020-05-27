@@ -4,7 +4,10 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
-import java.util.*;
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Initial resume class
@@ -36,7 +39,7 @@ public class Resume implements Serializable {
         this.fullName = fullName;
     }
 
-    public void addSection (SectionType type, AbstractSection abstractSection) {
+    public void addSection(SectionType type, AbstractSection abstractSection) {
         section.put(type, abstractSection);
     }
 
@@ -59,7 +62,8 @@ public class Resume implements Serializable {
     public AbstractSection getStorageSection(SectionType type) {
         return section.get(type);
     }
-    public Map<SectionType, AbstractSection> getSection (){
+
+    public Map<SectionType, AbstractSection> getSection() {
         return section;
     }
 

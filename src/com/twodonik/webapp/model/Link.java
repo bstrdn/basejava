@@ -18,6 +18,10 @@ public class Link implements Serializable {
         this.url = url;
     }
 
+    public Link(String name) {
+        this.name = name;
+    }
+
     public Link() {
     }
 

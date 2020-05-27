@@ -23,6 +23,7 @@ public class Position implements Serializable {
 
     public Position(YearMonth startDate, YearMonth endDate, String title, String description) {
         Objects.requireNonNull(startDate, "startDate must not be null");
+        Objects.requireNonNull(endDate, "startDate must not be null");
         Objects.requireNonNull(description, "startDate must not be null");
         this.startDate = startDate;
         this.endDate = endDate;
