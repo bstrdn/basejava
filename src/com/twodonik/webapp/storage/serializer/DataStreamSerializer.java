@@ -7,9 +7,6 @@ import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-
-import static com.twodonik.webapp.model.SectionType.*;
 
 public class DataStreamSerializer implements StreamSerializer {
     @Override
@@ -26,14 +23,25 @@ public class DataStreamSerializer implements StreamSerializer {
             }
 
             Map<SectionType, AbstractSection> section = resume.getSection();
-
-
-            writeTextSection(dos, section, OBJECTIVE);
-            writeTextSection(dos, section, PERSONAL);
-            writeListSection(dos, section, ACHIEVEMENT);
-            writeListSection(dos, section, QUALIFICATION);
-            writeOrganizationSection(dos, section, EXPERIENCE);
-            writeOrganizationSection(dos, section, EDUCATION);
+            dos.writeInt(section.size());
+            for (Map.Entry<SectionType, AbstractSection> m : section.entrySet()) {
+                SectionType st = m.getKey();
+                dos.writeUTF(st.name());
+                switch (st) {
+                    case OBJECTIVE:
+                    case PERSONAL:
+                        dos.writeUTF(((TextSection) section.get(st)).getContent());
+                        break;
+                    case ACHIEVEMENT:
+                    case QUALIFICATION:
+                        writeListSection(dos, section, st);
+                        break;
+                    case EXPERIENCE:
+                    case EDUCATION:
+                        writeOrganizationSection(dos, section, st);
+                        break;
+                }
+            }
         }
     }
 
@@ -47,23 +55,23 @@ public class DataStreamSerializer implements StreamSerializer {
                 resume.addContact(ContactType.valueOf(dis.readUTF()), dis.readUTF());
             }
             //section
-            if (dis.readBoolean()) {
-                resume.addSection(OBJECTIVE, new TextSection(dis.readUTF()));
-            }
-            if (dis.readBoolean()) {
-                resume.addSection(PERSONAL, new TextSection(dis.readUTF()));
-            }
-            if (dis.readBoolean()) {
-                resume.addSection(ACHIEVEMENT, readListSection(dis));
-            }
-            if (dis.readBoolean()) {
-                resume.addSection(QUALIFICATION, readListSection(dis));
-            }
-            if (dis.readBoolean()) {
-                resume.addSection(EXPERIENCE, readOrganizationSection(dis));
-            }
-            if (dis.readBoolean()) {
-                resume.addSection(EDUCATION, readOrganizationSection(dis));
+            int count = dis.readInt();
+            for (int i = 0; i < count; i++) {
+                SectionType st = SectionType.valueOf(dis.readUTF());
+                switch (st) {
+                    case OBJECTIVE:
+                    case PERSONAL:
+                        resume.addSection(st, new TextSection(dis.readUTF()));
+                        break;
+                    case ACHIEVEMENT:
+                    case QUALIFICATION:
+                        resume.addSection(st, readListSection(dis));
+                        break;
+                    case EXPERIENCE:
+                    case EDUCATION:
+                        resume.addSection(st, readOrganizationSection(dis));
+                        break;
+                }
             }
             return resume;
         }
@@ -82,81 +90,49 @@ public class DataStreamSerializer implements StreamSerializer {
         int loSize = dis.readInt();
         List<Organization> lo = new ArrayList<>();
         for (int i = 0; i < loSize; i++) {
-            Link link;
-            if (dis.readBoolean()) {
-                link = new Link(dis.readUTF(), dis.readUTF());
-            } else {
-                link = new Link(dis.readUTF());
-            }
+            Link link = new Link(dis.readUTF(), dis.readUTF());
             int lpSize = dis.readInt();
             List<Position> lp = new ArrayList<>();
             for (int j = 0; j < lpSize; j++) {
-                lp.add(new Position(YearMonth.of(dis.readInt(), dis.readInt()), YearMonth.of(dis.readInt(), dis.readInt()), dis.readBoolean() ? dis.readUTF() : null, dis.readUTF()));
+                lp.add(new Position(YearMonth.of(dis.readInt(), dis.readInt()), YearMonth.of(dis.readInt(), dis.readInt()), dis.readUTF(), dis.readUTF()));
             }
             lo.add(new Organization(link, lp));
         }
         return new OrganizationSection(lo);
     }
 
-    private void writeTextSection(DataOutputStream dos, Map<SectionType, AbstractSection> section, SectionType sectionType) throws IOException {
-        boolean objBoo = Objects.nonNull(section.get(sectionType));
-        dos.writeBoolean(objBoo);
-        if (objBoo) {
-            dos.writeUTF(((TextSection) section.get(sectionType)).getContent());
-        }
-    }
-
     private void writeListSection(DataOutputStream dos, Map<SectionType, AbstractSection> section, SectionType sectionType) throws IOException {
-        if (Objects.nonNull(section.get(sectionType))) {
-            dos.writeBoolean(true);
-            List<String> ach = ((ListSection) section.get(sectionType)).getItems();
-            int size = ach.size();
-            dos.writeInt(size);
-            for (int i = 0; i < size; i++) {
-                dos.writeUTF(ach.get(i));
-            }
-        } else {
-            dos.writeBoolean(false);
-
+        List<String> ach = ((ListSection) section.get(sectionType)).getItems();
+        int size = ach.size();
+        dos.writeInt(size);
+        for (int i = 0; i < size; i++) {
+            dos.writeUTF(ach.get(i));
         }
     }
 
     private void writeOrganizationSection(DataOutputStream dos, Map<SectionType, AbstractSection> section, SectionType sectionType) throws IOException {
-        if (Objects.nonNull(section.get(sectionType))) {
-            dos.writeBoolean(true);
-            List<Organization> lr = ((OrganizationSection) section.get(sectionType)).getOrganizations();
-            int org = lr.size();
-            dos.writeInt(org);
-            for (Organization organization : lr) {
-                Link link = organization.getLink();
-
-                if (Objects.nonNull(link.getUrl())) {
-                    dos.writeBoolean(true);
-                    dos.writeUTF(link.getName());
-                    dos.writeUTF(link.getUrl());
-                } else {
-                    dos.writeBoolean(false);
-                    dos.writeUTF(link.getName());
-                }
-                List<Position> lp = organization.getPositions();
-                dos.writeInt(lp.size());
-                for (Position position : lp) {
-                    dos.writeInt(position.getStartDate().getYear());
-                    dos.writeInt(position.getStartDate().getMonthValue());
-                    dos.writeInt(position.getEndDate().getYear());
-                    dos.writeInt(position.getEndDate().getMonthValue());
-                    if (Objects.nonNull(position.getTitle())) {
-                        dos.writeBoolean(true);
-                        dos.writeUTF(position.getTitle());
-                    } else {
-                        dos.writeBoolean(false);
-                    }
-                    dos.writeUTF(position.getDescription());
-                }
+        List<Organization> lr = ((OrganizationSection) section.get(sectionType)).getOrganizations();
+        int org = lr.size();
+        dos.writeInt(org);
+        for (Organization organization : lr) {
+            Link link = organization.getLink();
+            dos.writeUTF(link.getName());
+            dos.writeUTF(link.getUrl() == null ? "" : link.getUrl());
+            List<Position> lp = organization.getPositions();
+            dos.writeInt(lp.size());
+            for (Position position : lp) {
+                writeDate(dos, position);
+                dos.writeUTF(position.getTitle());
+                dos.writeUTF(position.getDescription());
             }
-        } else {
-            dos.writeBoolean(false);
         }
+    }
+
+    private void writeDate(DataOutputStream dos, Position position) throws IOException {
+        dos.writeInt(position.getStartDate().getYear());
+        dos.writeInt(position.getStartDate().getMonthValue());
+        dos.writeInt(position.getEndDate().getYear());
+        dos.writeInt(position.getEndDate().getMonthValue());
     }
 }
 
