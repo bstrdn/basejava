@@ -30,15 +30,15 @@ public class DataStreamSerializer implements StreamSerializer {
                 switch (st) {
                     case OBJECTIVE:
                     case PERSONAL:
-                        dos.writeUTF(((TextSection) section.get(st)).getContent());
+                        dos.writeUTF(((TextSection) m.getValue()).getContent());
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATION:
-                        writeListSection(dos, section, st);
+                        writeListSection(dos, m.getValue());
                         break;
                     case EXPERIENCE:
                     case EDUCATION:
-                        writeOrganizationSection(dos, section, st);
+                        writeOrganizationSection(dos, m.getValue());
                         break;
                 }
             }
@@ -90,19 +90,20 @@ public class DataStreamSerializer implements StreamSerializer {
         int loSize = dis.readInt();
         List<Organization> lo = new ArrayList<>();
         for (int i = 0; i < loSize; i++) {
-            Link link = new Link(dis.readUTF(), dis.readUTF());
+            String url = dis.readUTF();
+            Link link = new Link(dis.readUTF(), url.equals("null") ? null : url);
             int lpSize = dis.readInt();
             List<Position> lp = new ArrayList<>();
             for (int j = 0; j < lpSize; j++) {
-                lp.add(new Position(YearMonth.of(dis.readInt(), dis.readInt()), YearMonth.of(dis.readInt(), dis.readInt()), dis.readUTF(), dis.readUTF()));
+                lp.add(new Position(readDate(dis.readInt(), dis.readInt()), readDate(dis.readInt(), dis.readInt()), dis.readUTF(), dis.readUTF()));
             }
             lo.add(new Organization(link, lp));
         }
         return new OrganizationSection(lo);
     }
 
-    private void writeListSection(DataOutputStream dos, Map<SectionType, AbstractSection> section, SectionType sectionType) throws IOException {
-        List<String> ach = ((ListSection) section.get(sectionType)).getItems();
+    private void writeListSection(DataOutputStream dos, AbstractSection section) throws IOException {
+        List<String> ach = ((ListSection) section).getItems();
         int size = ach.size();
         dos.writeInt(size);
         for (int i = 0; i < size; i++) {
@@ -110,29 +111,32 @@ public class DataStreamSerializer implements StreamSerializer {
         }
     }
 
-    private void writeOrganizationSection(DataOutputStream dos, Map<SectionType, AbstractSection> section, SectionType sectionType) throws IOException {
-        List<Organization> lr = ((OrganizationSection) section.get(sectionType)).getOrganizations();
+    private void writeOrganizationSection(DataOutputStream dos, AbstractSection section) throws IOException {
+        List<Organization> lr = ((OrganizationSection) section).getOrganizations();
         int org = lr.size();
         dos.writeInt(org);
         for (Organization organization : lr) {
             Link link = organization.getLink();
+            dos.writeUTF(link.getUrl() == null ? "null" : link.getUrl());
             dos.writeUTF(link.getName());
-            dos.writeUTF(link.getUrl() == null ? "" : link.getUrl());
             List<Position> lp = organization.getPositions();
             dos.writeInt(lp.size());
             for (Position position : lp) {
-                writeDate(dos, position);
+                writeDate(dos, position.getStartDate());
+                writeDate(dos, position.getEndDate());
                 dos.writeUTF(position.getTitle());
-                dos.writeUTF(position.getDescription());
+                dos.writeUTF(position.getDescription() == null ? "" : position.getDescription());
             }
         }
     }
 
-    private void writeDate(DataOutputStream dos, Position position) throws IOException {
-        dos.writeInt(position.getStartDate().getYear());
-        dos.writeInt(position.getStartDate().getMonthValue());
-        dos.writeInt(position.getEndDate().getYear());
-        dos.writeInt(position.getEndDate().getMonthValue());
+    private YearMonth readDate(int month, int year) {
+        return YearMonth.of(month, year);
+    }
+
+    private void writeDate(DataOutputStream dos, YearMonth ym) throws IOException {
+        dos.writeInt(ym.getYear());
+        dos.writeInt(ym.getMonthValue());
     }
 }
 
