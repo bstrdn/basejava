@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.twodonik.webapp.storage.serializer.DataStreamConsumer.*;
+
 public class DataStreamSerializer implements StreamSerializer {
     @Override
     public void doWrite(Resume resume, OutputStream os) throws IOException {
@@ -31,27 +33,7 @@ public class DataStreamSerializer implements StreamSerializer {
             Map<SectionType, AbstractSection> section = resume.getSection();
             dos.writeInt(section.size());
 
-            section.forEach((sectionType, abstractSection) -> {
-                try {
-                    dos.writeUTF(sectionType.name());
-                    switch (sectionType) {
-                        case OBJECTIVE:
-                        case PERSONAL:
-                            dos.writeUTF(((TextSection) abstractSection).getContent());
-                            break;
-                        case ACHIEVEMENT:
-                        case QUALIFICATION:
-                            writeListSection(dos, abstractSection);
-                            break;
-                        case EXPERIENCE:
-                        case EDUCATION:
-                            writeOrganizationSection(dos, abstractSection);
-                            break;
-                    }
-                } catch (IOException e) {
-                    throw new StorageException("IOExceprion", e);
-                }
-            });
+            section.forEach((st, as) -> write(dos, as, st));
         }
     }
 
@@ -112,42 +94,10 @@ public class DataStreamSerializer implements StreamSerializer {
         return new OrganizationSection(lo);
     }
 
-    private void writeListSection(DataOutputStream dos, AbstractSection section) throws IOException {
-        List<String> ach = ((ListSection) section).getItems();
-        int size = ach.size();
-        dos.writeInt(size);
-
-        for (int i = 0; i < size; i++) {
-            dos.writeUTF(ach.get(i));
-        }
-    }
-
-    private void writeOrganizationSection(DataOutputStream dos, AbstractSection section) throws IOException {
-        List<Organization> lr = ((OrganizationSection) section).getOrganizations();
-        int org = lr.size();
-        dos.writeInt(org);
-        for (Organization organization : lr) {
-            Link link = organization.getLink();
-            dos.writeUTF(link.getUrl() == null ? "" : link.getUrl());
-            dos.writeUTF(link.getName());
-            List<Position> lp = organization.getPositions();
-            dos.writeInt(lp.size());
-            for (Position position : lp) {
-                writeDate(dos, position.getStartDate());
-                writeDate(dos, position.getEndDate());
-                dos.writeUTF(position.getTitle());
-                dos.writeUTF(position.getDescription() == null ? "" : position.getDescription());
-            }
-        }
-    }
 
     private YearMonth readDate(int month, int year) {
         return YearMonth.of(month, year);
     }
 
-    private void writeDate(DataOutputStream dos, YearMonth ym) throws IOException {
-        dos.writeInt(ym.getYear());
-        dos.writeInt(ym.getMonthValue());
-    }
 }
 
