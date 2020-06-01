@@ -8,7 +8,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.YearMonth;
 import java.util.Objects;
-import static com.twodonik.webapp.util.DateUtil.*;
+
+import static com.twodonik.webapp.util.DateUtil.NOW;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Position implements Serializable {
@@ -24,7 +25,7 @@ public class Position implements Serializable {
     public Position(YearMonth startDate, YearMonth endDate, String title, String description) {
         Objects.requireNonNull(startDate, "startDate must not be null");
         Objects.requireNonNull(endDate, "startDate must not be null");
-        Objects.requireNonNull(description, "startDate must not be null");
+        Objects.requireNonNull(title, "title must not be null");
         this.startDate = startDate;
         this.endDate = endDate;
         this.title = title;
@@ -32,7 +33,7 @@ public class Position implements Serializable {
     }
 
     public Position(YearMonth startDate, String title, String description) {
-        this(startDate, NOW, title,description);
+        this(startDate, NOW, title, description);
     }
 
     public Position() {

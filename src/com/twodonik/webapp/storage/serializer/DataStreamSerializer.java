@@ -1,5 +1,6 @@
 package com.twodonik.webapp.storage.serializer;
 
+import com.twodonik.webapp.exception.StorageException;
 import com.twodonik.webapp.model.*;
 
 import java.io.*;
@@ -17,31 +18,40 @@ public class DataStreamSerializer implements StreamSerializer {
 
             Map<ContactType, String> contact = resume.getContact();
             dos.writeInt(contact.size());
-            for (Map.Entry<ContactType, String> entry : contact.entrySet()) {
-                dos.writeUTF(entry.getKey().name());
-                dos.writeUTF(entry.getValue());
-            }
+
+            contact.forEach((c, s) -> {
+                try {
+                    dos.writeUTF(c.name());
+                    dos.writeUTF(s);
+                } catch (IOException e) {
+                    throw new StorageException("IO Exception", e);
+                }
+            });
 
             Map<SectionType, AbstractSection> section = resume.getSection();
             dos.writeInt(section.size());
-            for (Map.Entry<SectionType, AbstractSection> m : section.entrySet()) {
-                SectionType st = m.getKey();
-                dos.writeUTF(st.name());
-                switch (st) {
-                    case OBJECTIVE:
-                    case PERSONAL:
-                        dos.writeUTF(((TextSection) m.getValue()).getContent());
-                        break;
-                    case ACHIEVEMENT:
-                    case QUALIFICATION:
-                        writeListSection(dos, m.getValue());
-                        break;
-                    case EXPERIENCE:
-                    case EDUCATION:
-                        writeOrganizationSection(dos, m.getValue());
-                        break;
+
+            section.forEach((sectionType, abstractSection) -> {
+                try {
+                    dos.writeUTF(sectionType.name());
+                    switch (sectionType) {
+                        case OBJECTIVE:
+                        case PERSONAL:
+                            dos.writeUTF(((TextSection) abstractSection).getContent());
+                            break;
+                        case ACHIEVEMENT:
+                        case QUALIFICATION:
+                            writeListSection(dos, abstractSection);
+                            break;
+                        case EXPERIENCE:
+                        case EDUCATION:
+                            writeOrganizationSection(dos, abstractSection);
+                            break;
+                    }
+                } catch (IOException e) {
+                    throw new StorageException("IOExceprion", e);
                 }
-            }
+            });
         }
     }
 
@@ -91,7 +101,7 @@ public class DataStreamSerializer implements StreamSerializer {
         List<Organization> lo = new ArrayList<>();
         for (int i = 0; i < loSize; i++) {
             String url = dis.readUTF();
-            Link link = new Link(dis.readUTF(), url.equals("null") ? null : url);
+            Link link = new Link(dis.readUTF(), url.equals("") ? null : url);
             int lpSize = dis.readInt();
             List<Position> lp = new ArrayList<>();
             for (int j = 0; j < lpSize; j++) {
@@ -106,6 +116,7 @@ public class DataStreamSerializer implements StreamSerializer {
         List<String> ach = ((ListSection) section).getItems();
         int size = ach.size();
         dos.writeInt(size);
+
         for (int i = 0; i < size; i++) {
             dos.writeUTF(ach.get(i));
         }
@@ -117,7 +128,7 @@ public class DataStreamSerializer implements StreamSerializer {
         dos.writeInt(org);
         for (Organization organization : lr) {
             Link link = organization.getLink();
-            dos.writeUTF(link.getUrl() == null ? "null" : link.getUrl());
+            dos.writeUTF(link.getUrl() == null ? "" : link.getUrl());
             dos.writeUTF(link.getName());
             List<Position> lp = organization.getPositions();
             dos.writeInt(lp.size());
