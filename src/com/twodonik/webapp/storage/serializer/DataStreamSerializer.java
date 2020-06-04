@@ -1,15 +1,13 @@
 package com.twodonik.webapp.storage.serializer;
 
-import com.twodonik.webapp.exception.StorageException;
 import com.twodonik.webapp.model.*;
 
 import java.io.*;
 import java.time.YearMonth;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-
-import static com.twodonik.webapp.storage.serializer.DataStreamConsumer.*;
 
 public class DataStreamSerializer implements StreamSerializer {
     @Override
@@ -19,22 +17,57 @@ public class DataStreamSerializer implements StreamSerializer {
             dos.writeUTF(resume.getFullName());
 
             Map<ContactType, String> contact = resume.getContact();
-            dos.writeInt(contact.size());
 
-            contact.forEach((c, s) -> {
-                try {
-                    dos.writeUTF(c.name());
-                    dos.writeUTF(s);
-                } catch (IOException e) {
-                    throw new StorageException("IO Exception", e);
-                }
+            writer(dos, contact.entrySet(), c -> {
+                dos.writeUTF(c.getKey().name());
+                dos.writeUTF(c.getValue());
             });
 
             Map<SectionType, AbstractSection> section = resume.getSection();
-            dos.writeInt(section.size());
-
-            section.forEach((st, as) -> write(dos, as, st));
+            writer(dos, section.entrySet(), st -> {
+                dos.writeUTF(st.getKey().name());
+                switch (st.getKey()) {
+                    case OBJECTIVE:
+                    case PERSONAL:
+                        dos.writeUTF(((TextSection) st.getValue()).getContent());
+                        break;
+                    case ACHIEVEMENT:
+                    case QUALIFICATION:
+                        writer(dos, ((ListSection) st.getValue()).getItems(), s -> dos.writeUTF(s));
+                        break;
+                    case EXPERIENCE:
+                    case EDUCATION:
+                        writer(dos, ((OrganizationSection) st.getValue()).getOrganizations(), organization -> {
+                            Link link = organization.getLink();
+                            dos.writeUTF(link.getUrl() == null ? "" : link.getUrl());
+                            dos.writeUTF(link.getName());
+                            writer(dos, organization.getPositions(), position -> {
+                                writeDate(dos, position.getStartDate());
+                                writeDate(dos, position.getEndDate());
+                                dos.writeUTF(position.getTitle());
+                                dos.writeUTF(position.getDescription() == null ? "" : position.getDescription());
+                            });
+                        });
+                        break;
+                }
+            });
         }
+    }
+
+    interface Writable<T> {
+        void write(T t) throws IOException;
+    }
+
+    <T> void writer(DataOutputStream dos, Collection<T> collection, Writable<T> writable) throws IOException {
+        dos.writeInt(collection.size());
+        for (T t : collection) {
+            writable.write(t);
+        }
+    }
+
+    static void writeDate(DataOutputStream dos, YearMonth ym) throws IOException {
+        dos.writeInt(ym.getYear());
+        dos.writeInt(ym.getMonthValue());
     }
 
     @Override
