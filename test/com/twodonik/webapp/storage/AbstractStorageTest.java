@@ -1,5 +1,6 @@
 package com.twodonik.webapp.storage;
 
+import com.twodonik.webapp.Config;
 import com.twodonik.webapp.ResumeTestData;
 import com.twodonik.webapp.exception.ExistStorageException;
 import com.twodonik.webapp.exception.NotExistStorageException;
@@ -16,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public abstract class AbstractStorageTest {
-    protected static final File STORAGE_DIR = new File("E:\\Java\\basejava\\storage");
+    protected static final File STORAGE_DIR = Config.get().getStorageDir();
     Storage storage;
 
     protected static final String UUID_1 = "UUID_1";
