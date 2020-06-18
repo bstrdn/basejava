@@ -1,6 +1,8 @@
 package com.twodonik.webapp.sql;
 
+import com.twodonik.webapp.Config;
 import com.twodonik.webapp.exception.StorageException;
+import com.twodonik.webapp.storage.CodeBlock;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,18 +10,23 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class SqlHelper {
-    public final ConnectionFactory connectionFactory;
+    private final ConnectionFactory connectionFactory;
 
-    public SqlHelper(String db, String login, String password) {
-        connectionFactory = () -> DriverManager.getConnection(db, login, password);
+    public SqlHelper(String url, String user, String pass) {
+        connectionFactory = () -> DriverManager.getConnection(url, user, pass);
     }
 
-    public void delete(String s) {
-        try (Connection conn = connectionFactory.getConnection();
-                PreparedStatement ps = conn.prepareStatement(s)) {
-            ps.execute();
-        } catch (
-                SQLException throwables) {
+    public ConnectionFactory getConnectionFactory() {
+        return connectionFactory;
+    }
+
+
+    public <T> T query(CodeBlock<T> cb) {
+
+        try (Connection conn = connectionFactory.getConnection()) {
+
+            return cb.execute(conn);
+        } catch (SQLException throwables) {
             throw new StorageException(throwables);
         }
     }
