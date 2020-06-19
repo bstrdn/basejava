@@ -1,5 +1,6 @@
 package com.twodonik.webapp.storage;
 
+import com.twodonik.webapp.exception.ExistStorageException;
 import com.twodonik.webapp.exception.NotExistStorageException;
 import com.twodonik.webapp.model.Resume;
 import com.twodonik.webapp.sql.SqlHelper;
@@ -42,10 +43,13 @@ public class SqlStorage implements Storage {
     @Override
     public void save(Resume resume) {
         sqlHelper.query(conn -> {
-            PreparedStatement ps = conn.prepareStatement("insert into resume (uuid, full_name) values (?, ?)");
+            PreparedStatement ps = conn.prepareStatement("insert into resume (uuid, full_name) values (?, ?) on conflict do nothing");
             ps.setString(1, resume.getUuid());
             ps.setString(2, resume.getFullName());
-            ps.execute();
+            int rs = ps.executeUpdate();
+            if (rs == 0) {
+                throw new ExistStorageException(resume.getUuid());
+            }
             return null;
         });
     }
