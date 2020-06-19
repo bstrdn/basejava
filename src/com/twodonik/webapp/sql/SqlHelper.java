@@ -1,12 +1,10 @@
 package com.twodonik.webapp.sql;
 
-import com.twodonik.webapp.Config;
 import com.twodonik.webapp.exception.StorageException;
 import com.twodonik.webapp.storage.CodeBlock;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class SqlHelper {
@@ -16,21 +14,12 @@ public class SqlHelper {
         connectionFactory = () -> DriverManager.getConnection(url, user, pass);
     }
 
-    public ConnectionFactory getConnectionFactory() {
-        return connectionFactory;
-    }
-
-
     public <T> T query(CodeBlock<T> cb) {
-
         try (Connection conn = connectionFactory.getConnection()) {
-
             return cb.execute(conn);
         } catch (SQLException throwables) {
             throw new StorageException(throwables);
         }
     }
-
-
 }
 
