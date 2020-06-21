@@ -8,9 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -19,11 +17,11 @@ public abstract class AbstractStorageTest {
     protected static final File STORAGE_DIR = Config.get().getStorageDir();
     Storage storage;
 
-    protected static final String UUID_1 = "UUID_1";
-    protected static final String UUID_2 = "UUID_2";
-    protected static final String UUID_3 = "UUID_3";
-    protected static final String UUID_4 = "UUID_4";
-    protected static final String UUID_5 = "UUID_5";
+    protected static final String UUID_1 = UUID.randomUUID().toString();
+    protected static final String UUID_2 = UUID.randomUUID().toString();
+    protected static final String UUID_3 = UUID.randomUUID().toString();
+    protected static final String UUID_4 = UUID.randomUUID().toString();
+    protected static final String UUID_5 = UUID.randomUUID().toString();
     //    protected static final Resume RESUME_1 = ResumeTestData.getTestResume1(UUID_1, "Ivanov Petr Sergeevich");
 //    protected static final Resume RESUME_2 = ResumeTestData.getTestResume2(UUID_2, "Smirnov Denis Grigorevich");
 //    protected static final Resume RESUME_3 = ResumeTestData.getTestResume1(UUID_3, "Smirnov Denis Grigorevich");
@@ -104,8 +102,8 @@ public abstract class AbstractStorageTest {
     @Test
     public void getAllSorted() {
         List<Resume> actualResume = storage.getAllSorted();
-        List<Resume> expectedResume = new ArrayList<>();
-        expectedResume.addAll(Arrays.asList(RESUME_1, RESUME_2, RESUME_3, RESUME_4));
+        List<Resume> expectedResume = Arrays.asList(RESUME_1, RESUME_2, RESUME_3, RESUME_4);
+        Collections.sort(expectedResume);
         assertEquals(4, expectedResume.size());
         assertEquals(expectedResume, actualResume);
     }

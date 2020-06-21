@@ -1,6 +1,6 @@
 create table resume
 (
-    uuid      char(36) not null
+    uuid      varchar not null
         constraint resume_pk
             primary key,
     full_name text     not null
@@ -16,7 +16,7 @@ create table public.contact
     id          serial   not null
         constraint contact_pk
             primary key,
-    resume_uuid char(36) not null
+    resume_uuid varchar not null
         constraint contact_resume_uuid_fk
             references public.resume
             on delete cascade,
@@ -29,3 +29,19 @@ alter table public.contact
 
 create unique index contact_resume_uuid_type_uindex
     on contact (resume_uuid, type);
+
+
+insert into resume (uuid, full_name)
+VALUES ('UUID_1', 'sdfdsf'),
+    ('UUID_2', 'sdfdsf'),
+    ('UUID_3', 'sddsfdfdsf'),
+    ('UUID_4', 'sddsfsdfdfdsf');
+
+
+insert into contact (resume_uuid, type, value) VALUES ('UUID_1', 'email', 'sdf@r.ru'), ('UUID_1', 'tel', '55555'),
+                                                      ('UUID_4', 'email', '4sdf@r.ru'), ('UUID_4', 'tel', '455555');
+
+select r.uuid, c.type, c.value
+from resume r
+         inner join contact c on r.uuid = c.resume_uuid
+where uuid = 'UUID_1';
