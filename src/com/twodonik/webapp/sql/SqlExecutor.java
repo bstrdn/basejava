@@ -1,4 +1,4 @@
-package com.twodonik.webapp.storage;
+package com.twodonik.webapp.sql;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
