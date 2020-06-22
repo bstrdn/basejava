@@ -20,6 +20,14 @@ public class ResumeTestData {
 
     }
 
+    public static Resume getTestResume0(String uuid, String fullName) {
+        Resume resume = new Resume(uuid, fullName);
+        resume.contact.put(PHONE, "+79211234567");
+        resume.contact.put(SKYPE, "petrov.sk");
+        resume.contact.put(MAIL, "petrov.sk@gmail.com");
+
+        return resume;
+    }
     public static Resume getTestResume1(String uuid, String fullName) {
         Resume resume = new Resume(uuid, fullName);
 
