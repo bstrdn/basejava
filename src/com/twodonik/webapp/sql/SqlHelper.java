@@ -14,14 +14,14 @@ public class SqlHelper {
         connectionFactory = () -> DriverManager.getConnection(url, user, pass);
     }
 
-    public void execute (String q) {
-        execute(q, PreparedStatement::execute);
+    public void execute (String sql) {
+        execute(sql, PreparedStatement::execute);
     }
 
-    public <T> T execute(String q, SqlExecutor<T> cb) {
+    public <T> T execute(String sql, SqlExecutor<T> executor) {
         try (Connection conn = connectionFactory.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement(q);
-            return cb.execute(ps);
+            PreparedStatement ps = conn.prepareStatement(sql);
+            return executor.execute(ps);
         } catch (SQLException e) {
             throw ExceptionUtil.convertException(e);
         }
