@@ -10,10 +10,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class SqlStorage implements Storage {
     private SqlHelper sqlHelper;
@@ -91,7 +91,7 @@ public class SqlStorage implements Storage {
 
     @Override
     public List<Resume> getAllSorted() {
-        Map<String, Resume> resumes = new HashMap<>();
+        Map<String, Resume> resumes = new LinkedHashMap<>();
         sqlHelper.transactionExecutor((SqlTransaction<Connection>) conn -> {
             try (PreparedStatement ps = conn.prepareStatement("select * from resume order by full_name, uuid;")) {
                 ResultSet rs = ps.executeQuery();
@@ -100,16 +100,10 @@ public class SqlStorage implements Storage {
                             rs.getString("full_name")));
                 }
             }
-            try (PreparedStatement ps = conn.prepareStatement("select * from contact")) {
-                ResultSet rs = ps.executeQuery();
-                while (rs.next()) {
-                    resumes.get(rs.getString("resume_uuid")).addContact(ContactType.valueOf(rs.getString("type")),
-                            rs.getString("value"));
-                }
-            }
+            addContact(conn, resumes);
             return null;
         });
-        return resumes.values().stream().sorted(Resume::compareTo).collect(Collectors.toList());
+        return new ArrayList<>(resumes.values());
     }
 
     @Override
@@ -127,6 +121,16 @@ public class SqlStorage implements Storage {
             ps.setString(i, strings[i - 1]);
         }
         return ps;
+    }
+
+    private void addContact(Connection conn, Map<String, Resume> resumes) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement("select * from contact")) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                resumes.get(rs.getString("resume_uuid")).addContact(ContactType.valueOf(rs.getString("type")),
+                        rs.getString("value"));
+            }
+        }
     }
 
 
