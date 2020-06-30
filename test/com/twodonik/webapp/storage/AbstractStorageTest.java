@@ -4,6 +4,7 @@ import com.twodonik.webapp.Config;
 import com.twodonik.webapp.ResumeTestData;
 import com.twodonik.webapp.exception.ExistStorageException;
 import com.twodonik.webapp.exception.NotExistStorageException;
+import com.twodonik.webapp.model.ContactType;
 import com.twodonik.webapp.model.Resume;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,10 +42,10 @@ public abstract class AbstractStorageTest {
     @Before
     public void setUp() {
         storage.clear();
-        storage.save(RESUME_1);
-        storage.save(RESUME_2);
-        storage.save(RESUME_3);
         storage.save(RESUME_4);
+        storage.save(RESUME_1);
+        storage.save(RESUME_3);
+        storage.save(RESUME_2);
     }
 
     @Test
@@ -57,6 +58,8 @@ public abstract class AbstractStorageTest {
     public void update() {
 //        Resume test1 = ResumeTestData.getTestResume1(UUID_1, "TEST");
         Resume test1 = new Resume(UUID_1, "TEST");
+        RESUME_1.addContact(ContactType.MAIL, "64645@dsf.ru");
+        RESUME_1.addContact(ContactType.SKYPE, "64sdf645@ddsf.ru");
         storage.update(test1);
         assertEquals(test1, storage.get(UUID_1));
     }
