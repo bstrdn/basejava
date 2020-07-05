@@ -10,7 +10,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -24,13 +27,13 @@ public abstract class AbstractStorageTest {
     protected static final String UUID_3 = UUID.randomUUID().toString();
     protected static final String UUID_4 = UUID.randomUUID().toString();
     protected static final String UUID_5 = UUID.randomUUID().toString();
-    //    protected static final Resume RESUME_1 = ResumeTestData.getTestResume1(UUID_1, "Ivanov Petr Sergeevich");
-//    protected static final Resume RESUME_2 = ResumeTestData.getTestResume2(UUID_2, "Smirnov Denis Grigorevich");
-    protected static final Resume RESUME_3 = ResumeTestData.getTestResume0(UUID_3, "Smirnov Denis Grigorevich");
-    protected static final Resume RESUME_4 = ResumeTestData.getTestResume0(UUID_4, "Petrov Vasiliy Timofeevich");
-    protected static final Resume RESUME_5 = ResumeTestData.getTestResume0(UUID_5, "Sidorov Artur Denisovich");
-    protected static final Resume RESUME_1 = new Resume(UUID_1, "Ivanov Petr Sergeevich");
-    protected static final Resume RESUME_2 = new Resume(UUID_2, "Smirnov Denis Grigorevich");
+    protected static final Resume RESUME_1 = ResumeTestData.getTestResume2(UUID_1, "Ivanov Petr Sergeevich");
+    protected static final Resume RESUME_2 = ResumeTestData.getTestResume2(UUID_2, "Smirnov Denis Grigorevich");
+    protected static final Resume RESUME_3 = ResumeTestData.getTestResume2(UUID_3, "Smirnov Denis Grigorevich");
+    protected static final Resume RESUME_4 = ResumeTestData.getTestResume2(UUID_4, "Petrov Vasiliy Timofeevich");
+    protected static final Resume RESUME_5 = ResumeTestData.getTestResume2(UUID_5, "Sidorov Artur Denisovich");
+//    protected static final Resume RESUME_1 = new Resume(UUID_1, "Ivanov Petr Sergeevich");
+//    protected static final Resume RESUME_2 = new Resume(UUID_2, "Smirnov Denis Grigorevich");
 //    protected static final Resume RESUME_3 = new Resume(UUID_3, "Smirnov Denis Grigorevich");
 //    protected static final Resume RESUME_4 = new Resume(UUID_4, "Petrov Vasiliy Timofeevich");
 //    protected static final Resume RESUME_5 = new Resume(UUID_5, "Sidorov Artur Denisovich");
@@ -56,8 +59,8 @@ public abstract class AbstractStorageTest {
 
     @Test
     public void update() {
-//        Resume test1 = ResumeTestData.getTestResume1(UUID_1, "TEST");
-        Resume test1 = new Resume(UUID_1, "TEST");
+        Resume test1 = ResumeTestData.getTestResume2(UUID_1, "TEST");
+//        Resume test1 = new Resume(UUID_1, "TEST");
         RESUME_1.addContact(ContactType.MAIL, "64645@dsf.ru");
         RESUME_1.addContact(ContactType.SKYPE, "64sdf645@ddsf.ru");
         storage.update(test1);
