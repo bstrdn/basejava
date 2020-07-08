@@ -45,8 +45,9 @@ public class SqlStorage implements Storage {
                     throw new NotExistStorageException(uuid);
                 }
             }
-            try (PreparedStatement ps = conn.prepareStatement("delete from contact where resume_uuid = ?")) {
-                setPrepareStatement(ps, uuid).execute();
+            try (PreparedStatement ps = conn.prepareStatement("delete from contact where resume_uuid = ?; " +
+                    "delete from text_section where resume_uuid = ?")) {
+                setPrepareStatement(ps, uuid, uuid).execute();
             }
             insertContact(conn, resume);
             insertTextSection(conn, resume);
@@ -197,6 +198,10 @@ public class SqlStorage implements Storage {
         try (PreparedStatement ps = conn.prepareStatement("insert into text_section (resume_uuid, type, value) values (?, ?, ?)")) {
             for (Map.Entry<SectionType, AbstractSection> map : resume.getSection().entrySet()) {
                 ps.clearParameters();
+//                switch (map.getValue().getClass().) {
+//                    case  TextSection.class:
+//                }
+
                 if (map.getValue() instanceof TextSection) {
                     setPrepareStatement(ps, resume.getUuid(), map.getKey().name(), ((TextSection) map.getValue()).getContent()).addBatch();
 
