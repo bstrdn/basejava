@@ -23,19 +23,19 @@ create unique index contact_resume_uuid_type_uindex
     on contact (resume_uuid, type);
 
 
-create table text_section
+create table section
 (
     id serial not null
-        constraint text_section_pk
+        constraint section_pk
             primary key,
     resume_uuid varchar not null
-        constraint text_section_resume_uuid_fk
+        constraint section_resume_uuid_fk
             references resume
             on delete cascade,
     type text not null,
     value text not null
 );
 
-create unique index text_section_id_uindex
-    on text_section (id);
+create unique index section_id_uindex
+    on section (id);
 
