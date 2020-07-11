@@ -5,8 +5,6 @@ import com.twodonik.webapp.model.*;
 import com.twodonik.webapp.sql.SqlHelper;
 import com.twodonik.webapp.sql.SqlTransaction;
 
-import java.io.BufferedReader;
-import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,7 +13,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.twodonik.webapp.model.SectionType.valueOf;
 
@@ -46,11 +43,11 @@ public class SqlStorage implements Storage {
                 }
             }
             try (PreparedStatement ps = conn.prepareStatement("delete from contact where resume_uuid = ?; " +
-                    "delete from text_section where resume_uuid = ?")) {
+                    "delete from section where resume_uuid = ?")) {
                 setPrepareStatement(ps, uuid, uuid).execute();
             }
             insertContact(conn, resume);
-            insertTextSection(conn, resume);
+            insertSection(conn, resume);
             return null;
         });
     }
@@ -62,7 +59,7 @@ public class SqlStorage implements Storage {
                 setPrepareStatement(ps, resume.getUuid(), resume.getFullName()).execute();
             }
             insertContact(conn, resume);
-            insertTextSection(conn, resume);
+            insertSection(conn, resume);
             return null;
         });
     }
@@ -84,7 +81,7 @@ public class SqlStorage implements Storage {
                     addContactToResume(rs, r);
                 } while (rs.next());
             }
-            try (PreparedStatement ps = conn.prepareStatement("select * from text_section where resume_uuid = ?")) {
+            try (PreparedStatement ps = conn.prepareStatement("select * from section where resume_uuid = ?")) {
                 ResultSet rs = setPrepareStatement(ps, r.getUuid()).executeQuery();
                 while (rs.next()) {
                     addTextSectionToResume(rs, r);
@@ -151,7 +148,7 @@ public class SqlStorage implements Storage {
     }
 
     private void addSection(Connection conn, Map<String, Resume> resumes) throws SQLException {
-        try (PreparedStatement ps = conn.prepareStatement("select * from text_section")) {
+        try (PreparedStatement ps = conn.prepareStatement("select * from section")) {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 addTextSectionToResume(rs, resumes.get(rs.getString("resume_uuid")));
@@ -170,7 +167,7 @@ public class SqlStorage implements Storage {
                     break;
                 case ACHIEVEMENT:
                 case QUALIFICATION:
-                    List<String> list = new BufferedReader(new StringReader(value)).lines().collect(Collectors.toList());
+                    String[] list = value.split("\\n");
                     r.addSection(type, new ListSection(list));
                     break;
             }
@@ -194,30 +191,24 @@ public class SqlStorage implements Storage {
         }
     }
 
-    private void insertTextSection(Connection conn, Resume resume) throws SQLException {
-        try (PreparedStatement ps = conn.prepareStatement("insert into text_section (resume_uuid, type, value) values (?, ?, ?)")) {
+    private void insertSection(Connection conn, Resume resume) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement("insert into section (resume_uuid, type, value) values (?, ?, ?)")) {
             for (Map.Entry<SectionType, AbstractSection> map : resume.getSection().entrySet()) {
                 ps.clearParameters();
-//                switch (map.getValue().getClass().) {
-//                    case  TextSection.class:
-//                }
-
-                if (map.getValue() instanceof TextSection) {
-                    setPrepareStatement(ps, resume.getUuid(), map.getKey().name(), ((TextSection) map.getValue()).getContent()).addBatch();
-
-                } else if (map.getValue() instanceof ListSection) {
-                    setPrepareStatement(ps, resume.getUuid(), map.getKey().name(), listToString(((ListSection) map.getValue()))).addBatch();
+                switch (map.getKey()) {
+                    case PERSONAL:
+                    case OBJECTIVE:
+                        setPrepareStatement(ps, resume.getUuid(), map.getKey().name(),
+                                ((TextSection) map.getValue()).getContent()).addBatch();
+                        break;
+                    case ACHIEVEMENT:
+                    case QUALIFICATION:
+                        setPrepareStatement(ps, resume.getUuid(), map.getKey().name(),
+                                String.join("\n", ((ListSection) map.getValue()).getItems())).addBatch();
+                        break;
                 }
             }
             ps.executeBatch();
         }
-    }
-
-    private String listToString(ListSection listSection) {
-        StringBuilder listToLine = new StringBuilder();
-        for (String s : listSection.getItems()) {
-            listToLine.append(s + "\n");
-        }
-        return listToLine.toString();
     }
 }
