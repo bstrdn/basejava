@@ -42,14 +42,20 @@ public class SqlStorage implements Storage {
                     throw new NotExistStorageException(uuid);
                 }
             }
-            try (PreparedStatement ps = conn.prepareStatement("delete from contact where resume_uuid = ?; " +
-                    "delete from section where resume_uuid = ?")) {
-                setPrepareStatement(ps, uuid, uuid).execute();
-            }
+            deleteAttributes(conn, "delete from contact where resume_uuid = ?", uuid);
+            deleteAttributes(conn, "delete from section where resume_uuid = ?", uuid);
             insertContact(conn, resume);
             insertSection(conn, resume);
             return null;
         });
+    }
+
+    private void deleteAttributes(Connection conn, String sql, String uuid) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            setPrepareStatement(ps, uuid).execute();
+        }
+
+
     }
 
     @Override
@@ -113,8 +119,8 @@ public class SqlStorage implements Storage {
                             rs.getString("full_name")));
                 }
             }
-            addContact(conn, resumes);
-            addSection(conn, resumes);
+            insertContact(conn, resumes);
+            insertSection(conn, resumes);
             return null;
         });
         return new ArrayList<>(resumes.values());
@@ -138,7 +144,7 @@ public class SqlStorage implements Storage {
         return ps;
     }
 
-    private void addContact(Connection conn, Map<String, Resume> resumes) throws SQLException {
+    private void insertContact(Connection conn, Map<String, Resume> resumes) throws SQLException {
         try (PreparedStatement ps = conn.prepareStatement("select * from contact")) {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -147,7 +153,7 @@ public class SqlStorage implements Storage {
         }
     }
 
-    private void addSection(Connection conn, Map<String, Resume> resumes) throws SQLException {
+    private void insertSection(Connection conn, Map<String, Resume> resumes) throws SQLException {
         try (PreparedStatement ps = conn.prepareStatement("select * from section")) {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -158,7 +164,7 @@ public class SqlStorage implements Storage {
 
     private void addTextSectionToResume(ResultSet rs, Resume r) throws SQLException {
         SectionType type = valueOf(rs.getString("type"));
-        String value = rs.getString("value");
+        String value = rs.getString("content");
         if (type != null && value != null) {
             switch (type) {
                 case PERSONAL:
@@ -192,7 +198,7 @@ public class SqlStorage implements Storage {
     }
 
     private void insertSection(Connection conn, Resume resume) throws SQLException {
-        try (PreparedStatement ps = conn.prepareStatement("insert into section (resume_uuid, type, value) values (?, ?, ?)")) {
+        try (PreparedStatement ps = conn.prepareStatement("insert into section (resume_uuid, type, content) values (?, ?, ?)")) {
             for (Map.Entry<SectionType, AbstractSection> map : resume.getSection().entrySet()) {
                 ps.clearParameters();
                 switch (map.getKey()) {

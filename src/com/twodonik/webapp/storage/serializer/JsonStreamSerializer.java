@@ -14,6 +14,13 @@ public class JsonStreamSerializer implements StreamSerializer {
         }
     }
 
+    public <T> String  toText(T section, OutputStream os) throws IOException {
+        try (Writer writer = new OutputStreamWriter(os, StandardCharsets.UTF_8)){
+            JsonParser.write(section, writer);
+        }
+        return "";
+    }
+
     @Override
     public Resume doRead(InputStream is) throws IOException {
         try (Reader reader = new InputStreamReader(is, StandardCharsets.UTF_8)) {

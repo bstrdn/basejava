@@ -1,5 +1,10 @@
 package com.twodonik.webapp;
 
+import com.sun.xml.internal.ws.api.ha.StickyFeature;
+import com.twodonik.webapp.sql.SqlHelper;
+import com.twodonik.webapp.storage.SqlStorage;
+import com.twodonik.webapp.storage.Storage;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -16,6 +21,9 @@ public class Config {
     private String dbUrl;
     private String dbUser;
     private String dbPassword;
+    private Storage storage;
+
+
     public static Config get() {
         return INSTANCE;
     }
@@ -27,6 +35,7 @@ public class Config {
             dbUrl = prop.getProperty("db.url");
             dbUser = prop.getProperty("db.user");
             dbPassword = prop.getProperty("db.password");
+            storage = new SqlStorage(new SqlHelper(dbUrl, dbUser, dbPassword));
         } catch (IOException e) {
             throw new IllegalStateException("invalid config file " + PROPS.getAbsolutePath());
         }
@@ -37,6 +46,10 @@ public class Config {
         if (home == null)
             return ".\\";
         else return home;
+    }
+
+    public Storage getStorage() {
+        return storage;
     }
 
     public File getStorageDir() {
