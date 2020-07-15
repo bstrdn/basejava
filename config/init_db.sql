@@ -33,7 +33,7 @@ create table section
             references resume
             on delete cascade,
     type text not null,
-    value text not null
+    content text not null
 );
 
 create unique index section_id_uindex
