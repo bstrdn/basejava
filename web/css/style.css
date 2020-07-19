@@ -1,0 +1,11 @@
+body {
+    color: goldenrod;
+    /*background: black;*/
+}
+dt {
+    color: black;
+    display: inline-block;
+}
+dd {
+    display: inline-block;
+}

@@ -16,7 +16,7 @@
 <html>
 <head>
     <link rel="stylesheet" href="css/style.css">
-    <title>Title</title>
+    <title>Resume list</title>
 </head>
 <body>
 <jsp:include page="fragments/header.jsp"/>
@@ -28,13 +28,32 @@
             <th></th>
             <th></th>
         </tr>
+<%--        <jsp:useBean id="resume" type="com.twodonik.webapp.model.Resume"/>--%>
 
-        <% for (Resume resume : (ArrayList<Resume>) request.getAttribute("resumes")) { %>
-        <tr>
-            <td><a href="?name=<%=resume.getUuid()%>"><%=resume.getFullName()%></a> </td>
-            <td><%=resume.getContact().get(ContactType.MAIL)%></td>
-        </tr>
-<% } %>
+        <c:forEach items="${resumes}" var="resume">
+            <jsp:useBean id="resume" type="com.twodonik.webapp.model.Resume"/>
+            <tr>
+                <td><a href="?uuid=${resume.uuid}&action=view">${resume.fullName}</a></td>
+                <td><%=ContactType.MAIL.toHtml(resume.contact.get(ContactType.MAIL))%></td>
+                <td><a href="?uuid=${resume.uuid}&action=delete">Delete</a></td>
+                <td><a href="?uuid=${resume.uuid}&action=edit"><img src="img/pencil.png"></a></td>
+
+
+
+            </tr>
+
+
+
+        </c:forEach>
+
+
+
+<%--        <% for (Resume resume : (ArrayList<Resume>) request.getAttribute("resumes")) { %>--%>
+<%--        <tr>--%>
+<%--            <td><a href="?name=<%=resume.getUuid()%>"><%=resume.getFullName()%></a> </td>--%>
+<%--            <td><%=resume.getContact().get(ContactType.MAIL)%></td>--%>
+<%--        </tr>--%>
+<%--<% } %>--%>
     </table>
 
 </section>
