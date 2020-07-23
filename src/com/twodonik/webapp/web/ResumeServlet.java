@@ -1,16 +1,17 @@
 package com.twodonik.webapp.web;
 
 import com.twodonik.webapp.Config;
-import com.twodonik.webapp.model.ContactType;
-import com.twodonik.webapp.model.Resume;
+import com.twodonik.webapp.model.*;
 import com.twodonik.webapp.storage.Storage;
 
+import javax.management.monitor.StringMonitor;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.*;
 
 public class ResumeServlet extends HttpServlet {
     private Storage storage;
@@ -25,16 +26,44 @@ public class ResumeServlet extends HttpServlet {
         String uuid = request.getParameter("uuid");
         String fullName = request.getParameter("fullName");
         Resume r = storage.get(uuid);
-r.setFullName(fullName);
+        r.setFullName(fullName);
         for (ContactType type : ContactType.values()) {
             String value = request.getParameter(type.name());
-            if (value != null && value.trim() != null) {
+            if (isItNull(value)) {
                 r.addContact(type, value);
             } else {
                 r.getContact().remove(type);
             }
         }
-storage.update(r);
+
+        for (SectionType type : SectionType.values()) {
+            switch (type.name()) {
+                case "PERSONAL":
+                case "OBJECTIVE":
+                    r.addSection(type, new TextSection(request.getParameter(type.name())));
+                    break;
+                case "ACHIEVEMENT":
+                case "QUALIFICATION":
+                    r.addSection(type, new ListSection(withoutNull(request.getParameterValues(type.name()))));
+                    break;
+                case "EXPERIENCE":
+                case "EDUCATION":
+//            for (String value : request.getParameterValues(type.name())) {
+//
+//        }
+                    String[] list = request.getParameterValues(type.name());
+                    for (int i = 0; i < list.length; i++) {
+                        if (list[i].equals("new")) {
+                            i++;
+
+                        }
+                    }
+            }
+
+        }
+
+
+        storage.update(r);
         response.sendRedirect("resume");
 
     }
@@ -67,31 +96,15 @@ storage.update(r);
         request.setAttribute("resume", r);
         request.getRequestDispatcher("view".equals(action) ? "WEB-INF/jsp/view.jsp" : "WEB-INF/jsp/edit.jsp").forward(request, response);
 
-//        request.setAttribute("resumes", storage.getAllSorted());
-//        request.getRequestDispatcher("WEB-INF/jsp/list.jsp").forward(request, response);
+    }
 
-//        request.setCharacterEncoding("UTF-8");
-//        response.setCharacterEncoding("UTF-8");
-//        response.setContentType("text/html; charset=UTF-8");
-//        String name = request.getParameter("name");
-//
-////        SqlStorage sqlStorage = new SqlStorage(new SqlHelper("jdbc:postgresql://localhost:5432/resumes", "postgres", "postgres"));
-//
-//        StringBuilder stringBuilder = new StringBuilder();
-//        stringBuilder.append("<table border=\"1\" border-collapse:\"collapse\" cellspacing = \"0\"><tr><th>FULL_NAME</th><th>EMAIL</th></tr>");
-//
-//        if (name == null) {
-//            List<Resume> resumes = storage.getAllSorted();
-//            for (Resume resume : resumes) {
-//                stringBuilder.append("<tr><td><a href = \"?name=" + resume.getUuid() + "\">" + resume.getFullName() + "</a></td><td>" + resume.getContact().get(ContactType.MAIL) + "</td></tr>");
-//
-//
-//            }
-//        } else {
-//            Resume resume = storage.get(name);
-//            stringBuilder.append("<tr><td>" + resume.getFullName() + "</td><td>" + resume.getContact().get(ContactType.MAIL) + "</td></tr>");
-//        }
-//        stringBuilder.append("</table>");
-//        response.getWriter().write(stringBuilder.toString());
+    boolean isItNull(String value) {
+        return (value != null && value.trim() != null);
+    }
+    private List<String> withoutNull(String[] values) {
+        List<String> list = new ArrayList<>(Arrays.asList(values));
+        list.removeAll(Arrays.asList("", null));
+
+        return list;
     }
 }

@@ -18,16 +18,24 @@
 <jsp:include page="fragments/header.jsp"/>
 <section>
 
-    <h1> ${resume.fullName}  <a href="?uuid=${resume.uuid}&action=edit">Edit</a> </h1>
+    <h1> ${resume.fullName} <a href="?uuid=${resume.uuid}&action=edit">Edit</a></h1>
 
     <h3>Contact:</h3>
-<c:forEach items="${resume.contact}" var="contact">
-    <jsp:useBean id="contact" type="java.util.Map.Entry<com.twodonik.webapp.model.ContactType, java.lang.String>"/>
-    <%=contact.getKey().toHtml(contact.getValue())%>
-<%--    ${contact.key}  ${contact.value} --%>
-    <br>
+    <c:forEach items="${resume.contact}" var="contact">
+        <jsp:useBean id="contact" type="java.util.Map.Entry<com.twodonik.webapp.model.ContactType, java.lang.String>"/>
+        <%=contact.getKey().toHtml(contact.getValue())%>
+        <br>
 
-</c:forEach>
+    </c:forEach>
+
+    <c:forEach items="${resume.section}" var="section">
+        <jsp:useBean id="section" type="java.util.Map.Entry<com.twodonik.webapp.model.SectionType, com.twodonik.webapp.model.AbstractSection>"/>
+        <h3>${section.key}</h3>
+<%--<%=section.getKey().toHtml(section.getValue())%>--%>
+        ${section.key.toHtml(section.value)}
+
+
+    </c:forEach>
 
 </section>
 <jsp:include page="fragments/footer.jsp"/>
