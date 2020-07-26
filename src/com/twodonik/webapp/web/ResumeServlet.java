@@ -4,14 +4,16 @@ import com.twodonik.webapp.Config;
 import com.twodonik.webapp.model.*;
 import com.twodonik.webapp.storage.Storage;
 
-import javax.management.monitor.StringMonitor;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.*;
+import java.time.YearMonth;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ResumeServlet extends HttpServlet {
     private Storage storage;
@@ -23,6 +25,10 @@ public class ResumeServlet extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html; charset=UTF-8");
+
         String uuid = request.getParameter("uuid");
         String fullName = request.getParameter("fullName");
         Resume r = storage.get(uuid);
@@ -48,18 +54,28 @@ public class ResumeServlet extends HttpServlet {
                     break;
                 case "EXPERIENCE":
                 case "EDUCATION":
-//            for (String value : request.getParameterValues(type.name())) {
+//                    String[] list = request.getParameterValues(type.name());
+//                    List<Organization> organization = new ArrayList<>();
+//                    for (int i = 0; i < list.length; i++) {
+//                        if (list[i].equals("new")) {
+//                            Link link = new Link(list[i + 1], list[i + 2]);
+//                            YearMonth start = YearMonth.parse(list[i + 4]);
+//                            YearMonth end = YearMonth.parse(list[i + 5]);
 //
-//        }
-                    String[] list = request.getParameterValues(type.name());
-                    for (int i = 0; i < list.length; i++) {
-                        if (list[i].equals("new")) {
-                            i++;
-
-                        }
-                    }
+//                            String title = list[i + 6];
+//                            String description = list[i + 7];
+//                            if (list[i + 6].equals("new")) {
+//                                organization.add(new Organization(link, new Position(start, end, null, title)));
+//                                i = i + 7;
+//                                continue;
+//                            }
+//
+//                            i = i + 2;
+//
+//                        }
+//                    }
+//                    r.addSection(type, new OrganizationSection(organization));
             }
-
         }
 
 
@@ -101,6 +117,7 @@ public class ResumeServlet extends HttpServlet {
     boolean isItNull(String value) {
         return (value != null && value.trim() != null);
     }
+
     private List<String> withoutNull(String[] values) {
         List<String> list = new ArrayList<>(Arrays.asList(values));
         list.removeAll(Arrays.asList("", null));

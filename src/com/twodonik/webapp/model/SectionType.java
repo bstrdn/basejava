@@ -14,7 +14,7 @@ public enum SectionType {
 
     private String title;
 
-    private SectionType(String title) {
+    SectionType(String title) {
         this.title = title;
     }
 
@@ -25,7 +25,7 @@ public enum SectionType {
         } else if (section instanceof ListSection) {
             ListSection listSection = (ListSection) section;
             for (String value : listSection.getItems()) {
-                result+="<p>" + value + "</p>";
+                result += "<p>" + value + "</p>";
             }
         } else if (section instanceof OrganizationSection) {
             OrganizationSection s = (OrganizationSection) section;
@@ -33,7 +33,7 @@ public enum SectionType {
                 Link link = org.getLink();
                 result += "<p>" + "<a href=\"" + link.getUrl() + "\">" + link.getName() + "</a><p>";
                 for (Position p : org.getPositions()) {
-                    result += "<p>" + p.getStartDate() + " - " + p.getEndDate() + " " + p.getTitle() + "<br>" + p.getDescription() + "</p>";
+                    result += "<p>" + p.getStartDate() + " - " + (p.getEndDate().toString().equals("3000-01") ? "now" : p.getEndDate()) + " " + p.getTitle() + "<br>" + p.getDescription() + "</p>";
                 }
             }
         }
