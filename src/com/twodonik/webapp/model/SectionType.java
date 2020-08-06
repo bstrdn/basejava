@@ -20,22 +20,27 @@ public enum SectionType {
 
     public <T> String toHtml(T section) {
         String result = "";
-        if (section instanceof TextSection) {
-            result += section;
-        } else if (section instanceof ListSection) {
-            ListSection listSection = (ListSection) section;
-            for (String value : listSection.getItems()) {
-                result += "<p>" + value + "</p>";
-            }
-        } else if (section instanceof OrganizationSection) {
-            OrganizationSection s = (OrganizationSection) section;
-            for (Organization org : s.getOrganizations()) {
-                Link link = org.getLink();
-                result += "<p>" + "<a href=\"" + link.getUrl() + "\">" + link.getName() + "</a><p>";
-                for (Position p : org.getPositions()) {
-                    result += "<p>" + p.getStartDate() + " - " + (p.getEndDate().toString().equals("3000-01") ? "now" : p.getEndDate()) + " " + p.getTitle() + "<br>" + p.getDescription() + "</p>";
+
+        switch (section.getClass().getSimpleName()) {
+            case "TextSection":
+                result += section;
+                break;
+            case "ListSection":
+                ListSection listSection = (ListSection) section;
+                for (String value : listSection.getItems()) {
+                    result += "<p>" + value + "</p>";
                 }
-            }
+                break;
+            case "OrganizationSection":
+                OrganizationSection s = (OrganizationSection) section;
+                for (Organization org : s.getOrganizations()) {
+                    Link link = org.getLink();
+                    result += "<p>" + "<a href=\"" + link.getUrl() + "\">" + link.getName() + "</a><p>";
+                    for (Position p : org.getPositions()) {
+                        result += "<p>" + p.getStartDate() + " - " + (p.getEndDate().toString().equals("3000-01") ? "now" : p.getEndDate()) + " " + p.getTitle() + "<br>" + p.getDescription() + "</p>";
+                    }
+                }
+                break;
         }
         return result;
     }

@@ -1,7 +1,10 @@
 package com.twodonik.webapp.storage;
 
 import com.twodonik.webapp.exception.NotExistStorageException;
-import com.twodonik.webapp.model.*;
+import com.twodonik.webapp.model.AbstractSection;
+import com.twodonik.webapp.model.ContactType;
+import com.twodonik.webapp.model.Resume;
+import com.twodonik.webapp.model.SectionType;
 import com.twodonik.webapp.sql.SqlHelper;
 import com.twodonik.webapp.sql.SqlTransaction;
 import com.twodonik.webapp.util.JsonParser;
@@ -55,8 +58,6 @@ public class SqlStorage implements Storage {
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             setPrepareStatement(ps, uuid).execute();
         }
-
-
     }
 
     @Override
@@ -172,24 +173,6 @@ public class SqlStorage implements Storage {
 
     }
 
-    private void addTextSectionToResume9(ResultSet rs, Resume r) throws SQLException {
-        SectionType type = valueOf(rs.getString("type"));
-        String value = rs.getString("content");
-        if (type != null && value != null) {
-            switch (type) {
-                case PERSONAL:
-                case OBJECTIVE:
-                    r.addSection(type, new TextSection(value));
-                    break;
-                case ACHIEVEMENT:
-                case QUALIFICATION:
-                    String[] list = value.split("\\n");
-                    r.addSection(type, new ListSection(list));
-                    break;
-            }
-        }
-    }
-
     private void addContactToResume(ResultSet rs, Resume r) throws SQLException {
         String contactType = rs.getString("type");
         String value = rs.getString("value");
@@ -202,27 +185,6 @@ public class SqlStorage implements Storage {
         try (PreparedStatement ps = conn.prepareStatement("insert into contact (resume_uuid, type, value) values (?, ?, ?)")) {
             for (Map.Entry<ContactType, String> m : resume.getContact().entrySet()) {
                 setPrepareStatement(ps, resume.getUuid(), m.getKey().name(), m.getValue()).addBatch();
-            }
-            ps.executeBatch();
-        }
-    }
-
-    private void insertSections0(Connection conn, Resume resume) throws SQLException {
-        try (PreparedStatement ps = conn.prepareStatement("insert into section (resume_uuid, type, content) values (?, ?, ?)")) {
-            for (Map.Entry<SectionType, AbstractSection> map : resume.getSection().entrySet()) {
-                ps.clearParameters();
-                switch (map.getKey()) {
-                    case PERSONAL:
-                    case OBJECTIVE:
-                        setPrepareStatement(ps, resume.getUuid(), map.getKey().name(),
-                                ((TextSection) map.getValue()).getContent()).addBatch();
-                        break;
-                    case ACHIEVEMENT:
-                    case QUALIFICATION:
-                        setPrepareStatement(ps, resume.getUuid(), map.getKey().name(),
-                                String.join("\n", ((ListSection) map.getValue()).getItems())).addBatch();
-                        break;
-                }
             }
             ps.executeBatch();
         }

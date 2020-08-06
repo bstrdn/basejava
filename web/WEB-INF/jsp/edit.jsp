@@ -23,8 +23,9 @@
 <section>
 
 
-    <form method="post" enctype="application/x-www-form-urlencoded" action="resume">
+    <form method="post" enctype="application/x-www-form-urlencoded" action="resume" id="form">
         <input type="hidden" name="uuid" value="${resume.uuid}">
+        <input type="hidden" name="action" value="edit"/>
 
         <dl>
             <dt>Имя:</dt>
@@ -49,69 +50,89 @@
 
                 <c:choose>
                     <c:when test="<%=type == SectionType.PERSONAL || type == SectionType.OBJECTIVE%>">
-                        <dd><input type="text" name="${type.name()}" size="100" value="${resume.section.get(type)}">
-                        </dd>
+                        <p>
+                        <dd><textarea form="form" rows="3" cols="100"
+                                      name="${type.name()}">${resume.section.get(type)}</textarea></dd>
+                        </p>
                     </c:when>
 
                     <c:when test="<%=type == SectionType.ACHIEVEMENT || type == SectionType.QUALIFICATION%>">
-                        <c:forEach items="<%=((ListSection) resume.section.get(type)).getItems()%>" var="value">
-                            <p>
-                            <dd><input type="text" name="${type.name()}" size="100" value="${value}"></dd>
-                            </p>
-                        </c:forEach>
+                        <c:if test="${resume.section.get(type) != null}">
+                            <c:forEach items="<%=((ListSection) resume.section.get(type)).getItems()%>" var="value">
+                                <p>
+                                <dd><textarea form="form" rows="3" cols="100" name="${type.name()}">${value}</textarea>
+                                </dd>
+                                </p>
+                            </c:forEach>
+                        </c:if>
                         <p>
-                        <dd><input type="text" name="${type.name()}" size="100" value=""></dd>
+                        <dd><textarea form="form" rows="3" cols="100" name="${type.name()}"></textarea></dd>
                         </p>
 
                     </c:when>
 
                     <c:when test="<%=type == SectionType.EXPERIENCE || type == SectionType.EDUCATION%>">
-                        <c:forEach items="<%=((OrganizationSection) resume.section.get(type)).getOrganizations()%>"
-                                   var="organization">
-                            <dd><input type="hidden" name="${type.name()}" value="new"></dd>
-                            <p>
-                            <dd>Company <input type="text" name="${type.name()}" size="12"
-                                               value="${organization.link.name}"></dd>
-                            <dd>Url <input type="text" name="${type.name()}" size="20" value="${organization.link.url}">
-                            </dd>
-                            <c:forEach items="${organization.positions}" var="position">
-                                <dd><input type="hidden" name="${type.name()}" value="newpos"></dd>
-
+                        <c:if test="${resume.section.get(type) != null}">
+                            <c:forEach items="<%=((OrganizationSection) resume.section.get(type)).getOrganizations()%>"
+                                       var="organization">
+                                <dd><input type="hidden" name="${type.name()}" value="new"></dd>
                                 <p>
-                                <dd>С <input type="text" name="${type.name()}" size="3" value="${position.startDate}">
+                                <dd>Company <input type="text" name="${type.name()}" size="12"
+                                                   value="${organization.link.name}"></dd>
+                                <dd>Url <input type="text" name="${type.name()}" size="20"
+                                               value="${organization.link.url}">
                                 </dd>
-                                <dd>По <input type="text" name="${type.name()}" size="3" value="${position.endDate}">
-                                </dd>
-                                <c:if test="${position.title != ' '}">
-                                    <dd>Должность <input type="text" name="${type.name()}" size="30"
-                                                         value="${position.title}"></dd>
-                                </c:if>
-                                </p>
-                                <p>
-                                <dd><input type="text" name="${type.name()}" size="90" value="${position.description}">
-                                </dd>
+                                <c:forEach items="${organization.positions}" var="position">
+                                    <dd><input type="hidden" name="${type.name()}" value="newpos"></dd>
 
+                                    <p>
+                                    <dd>С <input type="text" name="${type.name()}" size="3"
+                                                 value="${position.startDate}">
+                                    </dd>
+                                    <dd>По <input type="text" name="${type.name()}" size="3"
+                                                  value="${position.endDate}">
+                                    </dd>
+                                    <c:if test="${position.title != ' '}">
+                                        <dd>Должность <input type="text" name="${type.name()}" size="30"
+                                                             value="${position.title}"></dd>
+                                    </c:if>
+
+                                    </p>
+                                    <p>
+                                    <dd><input type="text" name="${type.name()}" size="90"
+                                               value="${position.description}">
+                                    </dd>
+                                    </p>
+                                </c:forEach>
                                 </p>
                             </c:forEach>
-                            </p>
+                        </c:if>
 
+                        <%--                        <c:if test="${resume.section.get(type) == null}">--%>
 
-                        </c:forEach>
+                        <%--                        <dd><input type="hidden" name="${type.name()}" value="new"></dd>--%>
+                        <%--                        <p>--%>
+                        <%--                        <dd>Company <input type="text" name="${type.name()}" size="12"></dd>--%>
+                        <%--                        <dd>Url <input type="text" name="${type.name()}" size="20">--%>
+                        <%--                        </dd>--%>
+                        <%--                        <dd><input type="hidden" name="${type.name()}" value="newpos"></dd>--%>
+                        <%--                        <p>--%>
+                        <%--                        <dd>С <input type="text" name="${type.name()}" size="3">--%>
+                        <%--                        </dd>--%>
+                        <%--                        <dd>По <input type="text" name="${type.name()}" size="3">--%>
+                        <%--                        </dd>--%>
+                        <%--                        <c:if test="${position.title != ' '}">--%>
+                        <%--                            <dd>Должность <input type="text" name="${type.name()}" size="30"></dd>--%>
 
-
+                        <%--                        </c:if>--%>
+                        <%--                        </c:if>--%>
                     </c:when>
-
                 </c:choose>
-
-
             </dl>
-
-
         </c:forEach>
         <button type="submit">Save</button>
         <button onclick="window.history.back()">Back</button>
     </form>
-
 </section>
 <jsp:include page="fragments/footer.jsp"/>
 </body>

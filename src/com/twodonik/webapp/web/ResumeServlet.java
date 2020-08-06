@@ -10,10 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.YearMonth;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.stream.Collectors;
 
 public class ResumeServlet extends HttpServlet {
     private Storage storage;
@@ -29,31 +27,41 @@ public class ResumeServlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=UTF-8");
 
-        String uuid = request.getParameter("uuid");
-        String fullName = request.getParameter("fullName");
-        Resume r = storage.get(uuid);
-        r.setFullName(fullName);
-        for (ContactType type : ContactType.values()) {
-            String value = request.getParameter(type.name());
-            if (isItNull(value)) {
-                r.addContact(type, value);
-            } else {
-                r.getContact().remove(type);
-            }
-        }
+        String action = request.getParameter("action");
+        Resume r;
+        if (action.contains("new")) {
+            r = new Resume(request.getParameter("fullName"));
+            r.addContact(ContactType.MAIL, request.getParameter("email"));
+            storage.save(r);
+        } else {
 
-        for (SectionType type : SectionType.values()) {
-            switch (type.name()) {
-                case "PERSONAL":
-                case "OBJECTIVE":
-                    r.addSection(type, new TextSection(request.getParameter(type.name())));
-                    break;
-                case "ACHIEVEMENT":
-                case "QUALIFICATION":
-                    r.addSection(type, new ListSection(withoutNull(request.getParameterValues(type.name()))));
-                    break;
-                case "EXPERIENCE":
-                case "EDUCATION":
+            String uuid = request.getParameter("uuid");
+            String fullName = request.getParameter("fullName");
+            r = storage.get(uuid);
+            r.setFullName(fullName);
+            for (ContactType type : ContactType.values()) {
+                String value = request.getParameter(type.name());
+                if (value != null && value.trim() != "") {
+                    r.addContact(type, value);
+                } else {
+                    r.getContact().remove(type);
+                }
+            }
+
+            for (SectionType type : SectionType.values()) {
+                switch (type.name()) {
+                    case "PERSONAL":
+                    case "OBJECTIVE":
+                        r.addSection(type, new TextSection(request.getParameter(type.name())));
+                        break;
+                    case "ACHIEVEMENT":
+                    case "QUALIFICATION":
+                        r.addSection(type, new ListSection(Arrays.stream(request.getParameterValues(type.name()))
+                                .filter(s -> !"".equals(s))
+                                .collect(Collectors.toList())));
+                        break;
+                    case "EXPERIENCE":
+                    case "EDUCATION":
 //                    String[] list = request.getParameterValues(type.name());
 //                    List<Organization> organization = new ArrayList<>();
 //                    for (int i = 0; i < list.length; i++) {
@@ -75,11 +83,12 @@ public class ResumeServlet extends HttpServlet {
 //                        }
 //                    }
 //                    r.addSection(type, new OrganizationSection(organization));
+                }
             }
+
+            storage.update(r);
+
         }
-
-
-        storage.update(r);
         response.sendRedirect("resume");
 
     }
@@ -112,16 +121,5 @@ public class ResumeServlet extends HttpServlet {
         request.setAttribute("resume", r);
         request.getRequestDispatcher("view".equals(action) ? "WEB-INF/jsp/view.jsp" : "WEB-INF/jsp/edit.jsp").forward(request, response);
 
-    }
-
-    boolean isItNull(String value) {
-        return (value != null && value.trim() != null);
-    }
-
-    private List<String> withoutNull(String[] values) {
-        List<String> list = new ArrayList<>(Arrays.asList(values));
-        list.removeAll(Arrays.asList("", null));
-
-        return list;
     }
 }
