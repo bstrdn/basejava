@@ -57,17 +57,16 @@
                     </c:when>
 
                     <c:when test="<%=type == SectionType.ACHIEVEMENT || type == SectionType.QUALIFICATION%>">
-                        <c:if test="${resume.section.get(type) != null}">
-                            <c:forEach items="<%=((ListSection) resume.section.get(type)).getItems()%>" var="value">
-                                <p>
-                                <dd><textarea form="form" rows="3" cols="100" name="${type.name()}">${value}</textarea>
-                                </dd>
-                                </p>
-                            </c:forEach>
+                        <c:if test="${resume.section.get(type) != null}"><p>
+                            <dd><textarea form="form" rows="14" cols="100" name="${type.name()}">
+<c:forEach items="<%=((ListSection) resume.section.get(type)).getItems()%>" var="value">${value}
+</c:forEach></textarea>
+                            </dd>
+                            </p>
                         </c:if>
-                        <p>
-                        <dd><textarea form="form" rows="3" cols="100" name="${type.name()}"></textarea></dd>
-                        </p>
+                        <c:if test="${resume.section.get(type) == null}">
+                            <dd><textarea form="form" rows="14" cols="100" name="${type.name()}"></textarea></dd>
+                        </c:if>
 
                     </c:when>
 
@@ -96,6 +95,9 @@
                                         <dd>Должность <input type="text" name="${type.name()}" size="30"
                                                              value="${position.title}"></dd>
                                     </c:if>
+                                    <c:if test="${position.title == ' '}"><input type="hidden"
+                                                                                 name="${type.name()}" value=" ">
+                                    </c:if>
 
                                     </p>
                                     <p>
@@ -107,25 +109,23 @@
                                 </p>
                             </c:forEach>
                         </c:if>
-
-                        <%--                        <c:if test="${resume.section.get(type) == null}">--%>
-
-                        <%--                        <dd><input type="hidden" name="${type.name()}" value="new"></dd>--%>
-                        <%--                        <p>--%>
-                        <%--                        <dd>Company <input type="text" name="${type.name()}" size="12"></dd>--%>
-                        <%--                        <dd>Url <input type="text" name="${type.name()}" size="20">--%>
-                        <%--                        </dd>--%>
-                        <%--                        <dd><input type="hidden" name="${type.name()}" value="newpos"></dd>--%>
-                        <%--                        <p>--%>
-                        <%--                        <dd>С <input type="text" name="${type.name()}" size="3">--%>
-                        <%--                        </dd>--%>
-                        <%--                        <dd>По <input type="text" name="${type.name()}" size="3">--%>
-                        <%--                        </dd>--%>
-                        <%--                        <c:if test="${position.title != ' '}">--%>
-                        <%--                            <dd>Должность <input type="text" name="${type.name()}" size="30"></dd>--%>
-
-                        <%--                        </c:if>--%>
-                        <%--                        </c:if>--%>
+                        <dd><input type="hidden" name="${type.name()}" value="new"></dd>
+                        <p>
+                        <dd>Company <input type="text" name="${type.name()}" size="12"></dd>
+                        <dd>Url <input type="text" name="${type.name()}" size="20">
+                        </dd>
+                        <dd><input type="hidden" name="${type.name()}" value="newpos"></dd>
+                        <p>
+                        <dd>С <input type="text" name="${type.name()}" size="3">
+                        </dd>
+                        <dd>По <input type="text" name="${type.name()}" size="3">
+                        </dd>
+                        <dd>Должность <input type="text" name="${type.name()}" size="30"></dd>
+                        </p>
+                        <p>
+                        <dd><input type="text" name="${type.name()}" size="90">
+                        </dd>
+                        </p>
                     </c:when>
                 </c:choose>
             </dl>

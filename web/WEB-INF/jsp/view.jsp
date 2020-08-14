@@ -29,11 +29,12 @@
     </c:forEach>
 
     <c:forEach items="${resume.section}" var="section">
-        <jsp:useBean id="section" type="java.util.Map.Entry<com.twodonik.webapp.model.SectionType, com.twodonik.webapp.model.AbstractSection>"/>
-        <h3>${section.key}</h3>
-<%--<%=section.getKey().toHtml(section.getValue())%>--%>
-        ${section.key.toHtml(section.value)}
-
+        <jsp:useBean id="section"
+                     type="java.util.Map.Entry<com.twodonik.webapp.model.SectionType, com.twodonik.webapp.model.AbstractSection>"/>
+        <c:if test="${section.value != ''}">
+            <h3>${section.key}</h3>
+            ${section.key.toHtml(section)}
+        </c:if>
 
     </c:forEach>
 

@@ -1,5 +1,7 @@
 package com.twodonik.webapp.model;
 
+import java.util.Map;
+
 public enum SectionType {
     PERSONAL("Личные качества"),
     OBJECTIVE("Позиция"),
@@ -18,21 +20,25 @@ public enum SectionType {
         this.title = title;
     }
 
-    public <T> String toHtml(T section) {
+    public <T> String toHtml(Map.Entry<SectionType, AbstractSection> m) {
         String result = "";
-
-        switch (section.getClass().getSimpleName()) {
-            case "TextSection":
-                result += section;
+        SectionType st = m.getKey();
+        AbstractSection as = m.getValue();
+        switch (st) {
+            case OBJECTIVE:
+            case PERSONAL:
+                result += as;
                 break;
-            case "ListSection":
-                ListSection listSection = (ListSection) section;
+            case ACHIEVEMENT:
+            case QUALIFICATION:
+                ListSection listSection = (ListSection) as;
                 for (String value : listSection.getItems()) {
                     result += "<p>" + value + "</p>";
                 }
                 break;
-            case "OrganizationSection":
-                OrganizationSection s = (OrganizationSection) section;
+            case EXPERIENCE:
+            case EDUCATION:
+                OrganizationSection s = (OrganizationSection) as;
                 for (Organization org : s.getOrganizations()) {
                     Link link = org.getLink();
                     result += "<p>" + "<a href=\"" + link.getUrl() + "\">" + link.getName() + "</a><p>";

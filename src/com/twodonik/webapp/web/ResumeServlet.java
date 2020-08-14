@@ -10,7 +10,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.YearMonth;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class ResumeServlet extends HttpServlet {
@@ -27,14 +30,16 @@ public class ResumeServlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=UTF-8");
 
-        String action = request.getParameter("action");
+        String action = request.getParameter("action").trim();
         Resume r;
-        if (action.contains("new")) {
+        if (action.contains("new") && request.getParameter("fullName") != "") {
             r = new Resume(request.getParameter("fullName"));
-            r.addContact(ContactType.MAIL, request.getParameter("email"));
+            String email = request.getParameter("email").trim();
+            if (email != "") {
+                r.addContact(ContactType.MAIL, email);
+            }
             storage.save(r);
-        } else {
-
+        } else if (action.contains("edit")) {
             String uuid = request.getParameter("uuid");
             String fullName = request.getParameter("fullName");
             r = storage.get(uuid);
@@ -49,45 +54,50 @@ public class ResumeServlet extends HttpServlet {
             }
 
             for (SectionType type : SectionType.values()) {
-                switch (type.name()) {
-                    case "PERSONAL":
-                    case "OBJECTIVE":
-                        r.addSection(type, new TextSection(request.getParameter(type.name())));
+                switch (type) {
+                    case PERSONAL:
+                    case OBJECTIVE:
+                        String value = request.getParameter(type.name());
+                        if (value != "") {
+                            r.addSection(type, new TextSection(value));
+                        }
                         break;
-                    case "ACHIEVEMENT":
-                    case "QUALIFICATION":
-                        r.addSection(type, new ListSection(Arrays.stream(request.getParameterValues(type.name()))
-                                .filter(s -> !"".equals(s))
-                                .collect(Collectors.toList())));
+                    case ACHIEVEMENT:
+                    case QUALIFICATION:
+                        ArrayList<String> list = (ArrayList<String>) Arrays.stream(request.getParameter(type.name()).split("\r\n"))
+                                .map(String::trim).filter(s1 -> !s1.equals("")).collect(Collectors.toList());
+                        r.addSection(type, new ListSection(list));
                         break;
-                    case "EXPERIENCE":
-                    case "EDUCATION":
-//                    String[] list = request.getParameterValues(type.name());
-//                    List<Organization> organization = new ArrayList<>();
-//                    for (int i = 0; i < list.length; i++) {
-//                        if (list[i].equals("new")) {
-//                            Link link = new Link(list[i + 1], list[i + 2]);
-//                            YearMonth start = YearMonth.parse(list[i + 4]);
-//                            YearMonth end = YearMonth.parse(list[i + 5]);
-//
-//                            String title = list[i + 6];
-//                            String description = list[i + 7];
-//                            if (list[i + 6].equals("new")) {
-//                                organization.add(new Organization(link, new Position(start, end, null, title)));
-//                                i = i + 7;
-//                                continue;
-//                            }
-//
-//                            i = i + 2;
-//
-//                        }
-//                    }
-//                    r.addSection(type, new OrganizationSection(organization));
+                    case EXPERIENCE:
+                    case EDUCATION:
+                        String[] values = request.getParameterValues(type.name());
+                        List<Organization> organization = new ArrayList<>();
+                        for (int i = 0; i < values.length; i++) {
+                            if (values[i + 1].equals("")) {
+                                break;
+                            }
+                            if (values[i].equals("new")) {
+                                Link link = new Link(values[i + 1], values[i + 2]);
+                                i += 2;
+                                ArrayList<Position> newpos = new ArrayList<>();
+                                while (values[i + 1].equals("newpos")) {
+                                    YearMonth start = YearMonth.parse(values[i + 2]);
+                                    YearMonth end = YearMonth.parse(values[i + 3]);
+                                    String title = values[i + 4];
+                                    String description = values[i + 5];
+                                    newpos.add(new Position(start, end, title, description));
+                                    i += 5;
+                                    if (i == values.length - 1) {
+                                        break;
+                                    }
+                                }
+                                organization.add(new Organization(link, newpos));
+                            }
+                        }
+                        r.addSection(type, new OrganizationSection(organization));
                 }
             }
-
             storage.update(r);
-
         }
         response.sendRedirect("resume");
 
