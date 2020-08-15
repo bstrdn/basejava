@@ -81,11 +81,13 @@ public class ResumeServlet extends HttpServlet {
                                 i += 2;
                                 ArrayList<Position> newpos = new ArrayList<>();
                                 while (values[i + 1].equals("newpos")) {
-                                    YearMonth start = YearMonth.parse(values[i + 2]);
-                                    YearMonth end = YearMonth.parse(values[i + 3]);
-                                    String title = values[i + 4];
-                                    String description = values[i + 5];
-                                    newpos.add(new Position(start, end, title, description));
+                                    if (!values[i + 2].equals("")) {
+                                        YearMonth start = YearMonth.parse(values[i + 2]);
+                                        YearMonth end = YearMonth.parse(values[i + 3]);
+                                        String title = values[i + 4];
+                                        String description = values[i + 5];
+                                        newpos.add(new Position(start, end, title, description));
+                                    }
                                     i += 5;
                                     if (i == values.length - 1) {
                                         break;

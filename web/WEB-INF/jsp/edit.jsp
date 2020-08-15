@@ -106,6 +106,31 @@
                                     </dd>
                                     </p>
                                 </c:forEach>
+                                <dd><input type="hidden" name="${type.name()}" value="newpos"></dd>
+
+                                <p>
+                                <dd>С <input type="text" name="${type.name()}" size="3"
+                                             value="${position.startDate}">
+                                </dd>
+                                <dd>По <input type="text" name="${type.name()}" size="3"
+                                              value="${position.endDate}">
+                                </dd>
+                                <c:if test="${type.name().equals('EXPERIENCE')}">
+
+                                    Должность: <input type="text"
+                                                      name="${type.name()}" value=" ">
+                                </c:if>
+                                <c:if test="${type.name().equals('EDUCATION')}">
+
+                                    <input type="hidden"
+                                           name="${type.name()}" value=" ">
+                                </c:if>
+                                </p>
+                                <p>
+                                <dd><input type="text" name="${type.name()}" size="90"
+                                           value="${position.description}">
+                                </dd>
+                                </p>
                                 </p>
                             </c:forEach>
                         </c:if>
@@ -120,7 +145,16 @@
                         </dd>
                         <dd>По <input type="text" name="${type.name()}" size="3">
                         </dd>
-                        <dd>Должность <input type="text" name="${type.name()}" size="30"></dd>
+                        <c:if test="${type.name().equals('EXPERIENCE')}">
+
+                            Должность: <input type="text"
+                                              name="${type.name()}" value=" ">
+                        </c:if>
+                        <c:if test="${type.name().equals('EDUCATION')}">
+
+                            <input type="hidden"
+                                   name="${type.name()}" value=" ">
+                        </c:if>
                         </p>
                         <p>
                         <dd><input type="text" name="${type.name()}" size="90">
