@@ -18,15 +18,15 @@
 <jsp:include page="fragments/header.jsp"/>
 <section>
 
-    <h1> ${resume.fullName} <a href="?uuid=${resume.uuid}&action=edit">Edit</a></h1>
+    <h1> ${resume.fullName} <a href="?uuid=${resume.uuid}&action=edit"><img src="img/pencil.png"></a></h1>
 
-    <h3>Contact:</h3>
+    <h3>CONTACT:</h3>
     <c:forEach items="${resume.contact}" var="contact">
         <jsp:useBean id="contact" type="java.util.Map.Entry<com.twodonik.webapp.model.ContactType, java.lang.String>"/>
         <%=contact.getKey().toHtml(contact.getValue())%>
         <br>
 
-    </c:forEach>
+    </c:forEach><hr>
 
     <c:forEach items="${resume.section}" var="section">
         <jsp:useBean id="section"
@@ -39,6 +39,7 @@
     </c:forEach>
 
 </section>
+<button onclick="window.history.back()">Back</button>
 <jsp:include page="fragments/footer.jsp"/>
 </body>
 </html>

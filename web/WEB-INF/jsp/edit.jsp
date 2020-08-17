@@ -59,8 +59,9 @@
                     <c:when test="<%=type == SectionType.ACHIEVEMENT || type == SectionType.QUALIFICATION%>">
                         <c:if test="${resume.section.get(type) != null}"><p>
                             <dd><textarea form="form" rows="14" cols="100" name="${type.name()}">
-<c:forEach items="<%=((ListSection) resume.section.get(type)).getItems()%>" var="value">${value}
-</c:forEach></textarea>
+                            <c:forEach items="<%=((ListSection) resume.section.get(type)).getItems()%>"
+                                       var="value">${value}
+                            </c:forEach></textarea>
                             </dd>
                             </p>
                         </c:if>
@@ -85,14 +86,14 @@
                                     <dd><input type="hidden" name="${type.name()}" value="newpos"></dd>
 
                                     <p>
-                                    <dd>С <input type="text" name="${type.name()}" size="3"
+                                    <dd>From: <input type="text" name="${type.name()}" size="3"
                                                  value="${position.startDate}">
                                     </dd>
-                                    <dd>По <input type="text" name="${type.name()}" size="3"
+                                    <dd>To: <input type="text" name="${type.name()}" size="3"
                                                   value="${position.endDate}">
                                     </dd>
                                     <c:if test="${position.title != ' '}">
-                                        <dd>Должность <input type="text" name="${type.name()}" size="30"
+                                        <dd>Position: <input type="text" name="${type.name()}" size="30"
                                                              value="${position.title}"></dd>
                                     </c:if>
                                     <c:if test="${position.title == ' '}"><input type="hidden"
@@ -101,7 +102,7 @@
 
                                     </p>
                                     <p>
-                                    <dd><input type="text" name="${type.name()}" size="90"
+                                    <dd>Description: <input type="text" name="${type.name()}" size="90"
                                                value="${position.description}">
                                     </dd>
                                     </p>
@@ -109,15 +110,15 @@
                                 <dd><input type="hidden" name="${type.name()}" value="newpos"></dd>
 
                                 <p>
-                                <dd>С <input type="text" name="${type.name()}" size="3"
+                                <dd>From: <input type="text" name="${type.name()}" size="3"
                                              value="${position.startDate}">
                                 </dd>
-                                <dd>По <input type="text" name="${type.name()}" size="3"
+                                <dd>To: <input type="text" name="${type.name()}" size="3"
                                               value="${position.endDate}">
                                 </dd>
                                 <c:if test="${type.name().equals('EXPERIENCE')}">
 
-                                    Должность: <input type="text"
+                                    Position: <input type="text"
                                                       name="${type.name()}" value=" ">
                                 </c:if>
                                 <c:if test="${type.name().equals('EDUCATION')}">
@@ -127,7 +128,7 @@
                                 </c:if>
                                 </p>
                                 <p>
-                                <dd><input type="text" name="${type.name()}" size="90"
+                                <dd>Description: <input type="text" name="${type.name()}" size="90"
                                            value="${position.description}">
                                 </dd>
                                 </p>
@@ -141,13 +142,13 @@
                         </dd>
                         <dd><input type="hidden" name="${type.name()}" value="newpos"></dd>
                         <p>
-                        <dd>С <input type="text" name="${type.name()}" size="3">
+                        <dd>From: <input type="text" name="${type.name()}" size="3">
                         </dd>
-                        <dd>По <input type="text" name="${type.name()}" size="3">
+                        <dd>To: <input type="text" name="${type.name()}" size="3">
                         </dd>
                         <c:if test="${type.name().equals('EXPERIENCE')}">
 
-                            Должность: <input type="text"
+                            Position: <input type="text"
                                               name="${type.name()}" value=" ">
                         </c:if>
                         <c:if test="${type.name().equals('EDUCATION')}">
@@ -157,7 +158,7 @@
                         </c:if>
                         </p>
                         <p>
-                        <dd><input type="text" name="${type.name()}" size="90">
+                        <dd>Description: <input type="text" name="${type.name()}" size="90">
                         </dd>
                         </p>
                     </c:when>

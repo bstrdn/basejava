@@ -1,16 +1,10 @@
-body {
-    color: black;
-}
 dt {
-    color: black;
     display: inline-block;
 }
 dd {
     display: inline-block;
 }
-h1 {
-    color: black;
-}
 h3 {
-    color: black;
+    margin: 25px 0 5px;
+
 }

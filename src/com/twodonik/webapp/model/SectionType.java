@@ -3,8 +3,8 @@ package com.twodonik.webapp.model;
 import java.util.Map;
 
 public enum SectionType {
-    PERSONAL("Личные качества"),
     OBJECTIVE("Позиция"),
+    PERSONAL("Личные качества"),
     ACHIEVEMENT("Достижения"),
     QUALIFICATION("Квалификация"),
     EXPERIENCE("Опыт работы"),
@@ -33,7 +33,7 @@ public enum SectionType {
             case QUALIFICATION:
                 ListSection listSection = (ListSection) as;
                 for (String value : listSection.getItems()) {
-                    result += "<p>" + value + "</p>";
+                    result += "<p>" + "• " + value + "</p>";
                 }
                 break;
             case EXPERIENCE:
