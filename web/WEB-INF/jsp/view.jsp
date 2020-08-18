@@ -26,7 +26,8 @@
         <%=contact.getKey().toHtml(contact.getValue())%>
         <br>
 
-    </c:forEach><hr>
+    </c:forEach>
+    <hr>
 
     <c:forEach items="${resume.section}" var="section">
         <jsp:useBean id="section"
@@ -35,7 +36,6 @@
             <h3>${section.key}</h3>
             ${section.key.toHtml(section)}
         </c:if>
-
     </c:forEach>
 
 </section>

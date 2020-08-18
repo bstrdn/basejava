@@ -66,6 +66,9 @@ public class Resume implements Serializable, Comparable<Resume> {
     public Map<SectionType, AbstractSection> getSection() {
         return section;
     }
+    public AbstractSection getSection(SectionType type) {
+        return section.get(type);
+    }
 
     public String getFullName() {
         return fullName;

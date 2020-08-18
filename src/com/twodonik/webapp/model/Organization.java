@@ -10,6 +10,7 @@ import java.util.Objects;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Organization implements Serializable {
     private static final long serialVersionUID = 1L;
+    public static final Organization EMPTY = new Organization("", "", Position.EMPTY);
 
     public Organization() {
     }
@@ -18,6 +19,9 @@ public class Organization implements Serializable {
 
     private List<Position> positions;
 
+    public Organization(String name, String url, Position... positions) {
+        this(new Link(name, url), positions);
+    }
 
     public Organization(Link link, Position... positions) {
         this(link, Arrays.asList(positions));

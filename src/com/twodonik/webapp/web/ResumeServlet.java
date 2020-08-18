@@ -123,6 +123,16 @@ public class ResumeServlet extends HttpServlet {
                 response.sendRedirect("resume");
                 return;
             case "edit":
+                r = storage.get(uuid);
+//                for (SectionType type : new SectionType[]{EXPERIENCE, EDUCATION}) {
+//                    OrganizationSection section = (OrganizationSection) r.getSection(type);
+//                    List<Organization> listWithEmpty = new ArrayList<>();
+//                    listWithEmpty.add(Organization.EMPTY);
+//                    if (section != null) {
+//                        section
+//                    }
+//                }
+                break;
             case "view":
                 r = storage.get(uuid);
                 break;
