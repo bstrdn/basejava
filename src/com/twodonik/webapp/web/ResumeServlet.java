@@ -16,6 +16,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.twodonik.webapp.model.SectionType.EDUCATION;
+import static com.twodonik.webapp.model.SectionType.EXPERIENCE;
+
 public class ResumeServlet extends HttpServlet {
     private Storage storage;
 
@@ -124,14 +127,20 @@ public class ResumeServlet extends HttpServlet {
                 return;
             case "edit":
                 r = storage.get(uuid);
-//                for (SectionType type : new SectionType[]{EXPERIENCE, EDUCATION}) {
-//                    OrganizationSection section = (OrganizationSection) r.getSection(type);
-//                    List<Organization> listWithEmpty = new ArrayList<>();
-//                    listWithEmpty.add(Organization.EMPTY);
-//                    if (section != null) {
-//                        section
-//                    }
-//                }
+                for (SectionType type : new SectionType[]{EXPERIENCE, EDUCATION}) {
+                    OrganizationSection section = (OrganizationSection) r.getSection(type);
+                    List<Organization> listWithEmpty = new ArrayList<>();
+                    listWithEmpty.add(Organization.EMPTY);
+                    if (section != null) {
+                        for (Organization org : section.getOrganizations()) {
+                            List<Position> emptyFirstPosition = new ArrayList<>();
+                            emptyFirstPosition.add(Position.EMPTY);
+                            emptyFirstPosition.addAll(org.getPositions());
+                            listWithEmpty.add(new Organization(org.getLink(), emptyFirstPosition));
+                        }
+                    }
+                    r.addSection(type, new OrganizationSection(listWithEmpty));
+                }
                 break;
             case "view":
                 r = storage.get(uuid);
